@@ -104,7 +104,18 @@ Open your browser and visit:
 ---
 
 ## **🚀 Future Enhancements**
-🔜 **AI Meal Planning & Weekly Recipe Suggestions**  
-🔜 **Grocery Delivery Service Integration**  
-🔜 **Mobile App (iOS & Android)**  
 🔜 **Voice Assistant Support for Hands-Free Cooking**  
+- **Alexa & Google Assistant integration** for step-by-step cooking guidance.  
+- Voice-based **recipe search & ingredient logging**.
+
+🔹 **Add a "Cooking Mode"**  
+- **Full-screen, step-by-step guided cooking mode** for a seamless experience.  
+- **Hands-free navigation via voice commands**.
+
+🔹 **Enhance Community Features**  
+- **Allow users to share their own recipes** and discover others.  
+- **Like, comment, and discuss recipes within the community**.
+
+🔹 **Voice-Enabled Recipe Search**  
+- **Use speech recognition** to **search for recipes hands-free**.
+- Compatible with **smart speakers and voice assistants**.
