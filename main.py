@@ -163,7 +163,7 @@ uploaded_file = st.file_uploader("", type=["jpg", "png", "jpeg"])
 
 if uploaded_file:
     col1, col2 = st.columns([1, 2])
-    
+
     with col1:
         image = Image.open(uploaded_file)
         st.image(image, caption="📷 Uploaded Image", use_column_width=True)
@@ -171,17 +171,48 @@ if uploaded_file:
     # Convert image to bytes
     img_bytes = io.BytesIO()
     image.save(img_bytes, format="JPEG")
-    img_bytes = img_bytes.getvalue()
+    img_bytes.seek(0)  # Reset stream position
+    print("✅ Image uploaded successfully")
 
     if st.button("🔍 Identify Ingredients"):
         with st.spinner("Processing..."):
-            # Mock API Call - Replace with real API call
-            detected_ingredients = ["Tomato", "Onion", "Cheese"]
-            st.session_state["ingredients"] = detected_ingredients
-            st.success("✅ Ingredients Identified!")
+            try:
+                # Log request details
+                print("🚀 Sending request to API...")
+                print(f"Image Size: {len(img_bytes.getvalue())} bytes")
 
-import streamlit as st
-import json
+                # Send image to backend API
+                response = requests.post(
+                    "http://127.0.0.1:5000/GPT/send-image",
+                    files={"file": ("image.jpg", img_bytes, "image/jpeg")}
+                )
+
+                # Debug response
+                print(f"📡 Response Status Code: {response.status_code}")
+                print(f"📡 Response Text: {response.text}")
+
+                if response.status_code == 200:
+                    data = response.json()
+                    st.session_state["ingredients"] = data.get("ingredients", [])
+                    st.session_state["recipes"] = data.get("recipes", [])
+
+                    if not st.session_state["ingredients"]:
+                        st.warning("⚠️ No ingredients detected. Try a different image.")
+                    else:
+                        st.success("✅ Ingredients Identified!")
+                        st.write("**Detected Ingredients:**", st.session_state["ingredients"])
+                else:
+                    st.error(f"🚨 Error: {response.json().get('error', 'Unknown error')}")
+                    print(f"❌ API Error: {response.json()}")
+
+            except requests.exceptions.RequestException as req_err:
+                st.error(f"🔴 Request Exception: {str(req_err)}")
+                print(f"🔴 Request Exception: {req_err}")
+
+            except Exception as e:
+                st.error(f"❌ Failed to process image: {str(e)}")
+                print(f"❌ General Error: {e}")
+
 
 # ---- DISPLAY INGREDIENT LIST ONLY AFTER IDENTIFICATION ----
 if "ingredients" in st.session_state:

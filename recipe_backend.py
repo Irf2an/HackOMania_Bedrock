@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from PIL import Image
 import io
 import tempfile
@@ -6,6 +7,7 @@ import os
 from langraph_pipeline import recognise_ingredients, get_recipes  # ✅ Import Langraph functions (placeholders)
 
 app = Flask(__name__)
+CORS(app)
 
 # ✅ Temporary dummy functions to test API (Replace with Langraph later)
 # def recognise_ingredients(image_path):
