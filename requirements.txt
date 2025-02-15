@@ -1,11 +1,12 @@
 python-dotenv
 streamlit
-langraph
 langchain
 langchain-openai
 langchain-core
 langchain-community
-openai
 faiss-cpu
 notebook
-flask
+Flask
+Pillow
+requests
+numpy

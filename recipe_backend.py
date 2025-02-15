@@ -1,61 +1,41 @@
 from flask import Flask, request, jsonify
-from langchain.llms import OpenAI
-from langchain import PromptTemplate, LLMChain
-# ... other LangChain/LangGraph imports
+from PIL import Image
+import io
+import tempfile
+import os
 
 app = Flask(__name__)
-llm = OpenAI(temperature=0.7)  # Initialize your LLM
 
-# Placeholder for recipe database (REPLACE with your actual recipe source)
-recipes_db = {  # Example recipes. Replace with a database or API.
-    "Apple,Banana,Orange": ["Apple pie", "Banana bread with orange zest"],
-    "Apple": ["Apple crumble", "Apple sauce"],
-    "Banana": ["Banana smoothie", "Banana pancakes"],
-    "Orange": ["Orange juice", "Orange cake"]
-}
+def start_langraph_sequence(image_path):
+    """
+    Placeholder for Langraph call.
+    This function should be completed by your teammate.
+    Right now, it simply returns a dummy response.
+    """
+    # return {"message": "Langraph sequence initiated", "image_path": image_path}
+    return {"message": "hooray", "image_path": image_path}  # Temporary response
 
-@app.route('/recognize_ingredients', methods=['POST'])
-def recognize_ingredients():
-    # Placeholder for ingredient recognition (REPLACE THIS WITH YOUR ACTUAL LOGIC)
-    # In a real app, you would process the uploaded image here.
-    # For this example, we'll just return some dummy ingredients.
-    # from google.cloud import vision
-    # client = vision.ImageAnnotatorClient()
-    # image = vision.Image(content=request.files['file'].read())
-    # response = client.text_detection(image=image)
-    # texts = response.text_annotations
-    # print('Texts:')
-    # for text in texts:
-    #     print('\n"{}"'.format(text.description))
-    #     vertices = (['({}, {})'.format(vertex.x, vertex.y)
-    #                 for vertex in text.bounding_poly.vertices])
-    # if response.error.code != vision.Error.Code.OK:
-    #     raise Exception('{}'.format(response.error.message))
-    # return jsonify({'ingredients':["Apple", "Banana", "Orange"]})
-    return jsonify({'ingredients': ["Apple", "Banana", "Orange"]})  # Replace with real ingredients
+@app.route("/GPT/send-image", methods=["POST"])
+def process_image():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
 
-@app.route('/get_recipes', methods=['POST'])
-def get_recipes():
-    data = request.get_json()
-    ingredients = data['ingredients']
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
 
-    # Simple recipe lookup (replace with your LangChain/LangGraph logic)
-    # For this example, we'll just check if the ingredient combination exists in the database.
-    ingredient_key = ",".join(sorted(ingredients))  # Sort for consistent lookup
-    recipes = recipes_db.get(ingredient_key, [])
+    try:
+        # Create a temporary directory
+        temp_dir = tempfile.gettempdir()
+        image_path = os.path.join(temp_dir, file.filename)  # Safe cross-platform path
 
-    # If no exact match, use LLM to generate recipes (LangChain or LangGraph)
-    if not recipes:
-      # Example with LangChain (replace with your LangGraph graph):
-      prompt_template = "Give me 3 recipe ideas using these ingredients: {ingredients}"
-      prompt = PromptTemplate(input_variables=["ingredients"], template=prompt_template)
-      chain = LLMChain(llm=llm, prompt=prompt)
-      recipes_string = ", ".join(ingredients)
-      generated_recipes = chain.run(recipes_string)
+        # Save image
+        image = Image.open(file)
+        image.save(image_path)
 
-      # Process the generated string into a list of recipes (this depends on the LLM's output format)
-      recipes = [recipe.strip() for recipe in generated_recipes.split("\n")]
-    return jsonify({'recipes': recipes})
-
-if __name__ == '__main__':
-    app.run(debug=True)  # Set debug=False for production
+        return jsonify({"message": "hooray", "image_path": image_path}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+if __name__ == "__main__":
+    app.run(debug=True)  # Ensure this is at the bottom
