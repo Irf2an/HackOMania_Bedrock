@@ -12,3 +12,4 @@ requests
 numpy
 flask_cors
 google-generativeai
+Flask[async]
