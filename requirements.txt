@@ -10,3 +10,4 @@ Flask
 Pillow
 requests
 numpy
+flask_cors
