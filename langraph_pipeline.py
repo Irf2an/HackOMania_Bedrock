@@ -71,21 +71,54 @@ def filter_ingredients(state: OverallIngredientState):
 #  Generate recipe
 def get_recipes(state: OverallRecipeState):
     messages = [
-        {"role": "system", "content": "You are a professional chef who suggests recipes based on available ingredients."},
+        {"role": "system", "content": "You are a professional chef who suggests multiple recipes based on available ingredients."},
         {"role": "user", "content": f"""
-        I have the following ingredients available: {', '.join(state['ingredients'])}.
-        I have dietary preference of {state['preferences']['Dietary Preference']}.
-        I prefer {state['preferences']['Recipe Style']} cooking style with {state['preferences']['Seasoning Preference']} level of seasoning/spices.
-        I would like the cooking time to be around {state['preferences']['Cooking Time']}.
-        Suggest a suitable dish I can cook using these ingredients and preferences.
-        Provide it as a step-by-step recipe.
-        Make sure the recipe is practical and uses all or most of the ingredients listed.
-        Format the response as:
-        Dish Name: [Dish Name]
-        Ingredients: [List of Ingredients]
-        Instructions: [Step-by-step cooking instructions]
-        """}
+            I have the following ingredients available: {', '.join(state['ingredients'])}.
+            I have a dietary preference of {state['preferences']['Dietary Preference']}.
+            I prefer {state['preferences']['Recipe Style']} cooking style with {state['preferences']['Seasoning Preference']} level of seasoning/spices.
+            I would like the cooking time to be around {state['preferences']['Cooking Time']}.
+            I would like the cooking difficulty to be {state['preferences']['Difficulty Level']}.
+            
+            Suggest **three different dishes** I can cook using some of these ingredients.
+            - Each recipe should use **a reasonable selection of the provided ingredients**, but does not need to include every single one.
+            - Ensure that each recipe makes sense and is practical to cook.
+            - If an important ingredient is missing, feel free to mention it as an optional ingredient.
+
+            Format the response strictly as a JSON dictionary like this:
+            {{
+                "recipe 1": {{
+                    "Dish Name": "[Dish Name]",
+                    "Ingredients": ["ingredient1", "ingredient2", "ingredient3"],  # Do not use all ingredients, just relevant ones
+                    "Instructions": [
+                        "Step 1: ...",
+                        "Step 2: ...",
+                        "Step 3: ..."
+                    ]
+                }},
+                "recipe 2": {{
+                    "Dish Name": "[Dish Name]",
+                    "Ingredients": ["ingredient1", "ingredient2", "ingredient3"],  # Select only essential ingredients
+                    "Instructions": [
+                        "Step 1: ...",
+                        "Step 2: ...",
+                        "Step 3: ..."
+                    ]
+                }},
+                "recipe 3": {{
+                    "Dish Name": "[Dish Name]",
+                    "Ingredients": ["ingredient1", "ingredient2", "ingredient3"],  # Allow variation
+                    "Instructions": [
+                        "Step 1: ...",
+                        "Step 2: ...",
+                        "Step 3: ..."
+                    ]
+                }}
+            }}
+
+            - Ensure the response is a valid JSON object with **no additional explanations**.
+            """}
     ]
+
     response = llm.invoke(messages)
     print(messages)
     return {"recipe_text": response.content}
