@@ -177,7 +177,7 @@ recipe_graph = StateGraph(OverallRecipeState)
 recipe_graph.add_node("generate_recipes", RunnableLambda(get_recipes))
 recipe_graph.add_node("filter_recipes", RunnableLambda(filter_recipe))  #  New node
 recipe_graph.add_edge("generate_recipes", "filter_recipes")  #  Filter after generating
-recipe_graph.add_edge("generate_recipes", END)
+recipe_graph.add_edge("filter_recipes", END)
 recipe_graph.set_entry_point("generate_recipes")
 compiled_recipe_graph = recipe_graph.compile()
 
