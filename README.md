@@ -1,7 +1,7 @@
 ## **🍽️ Bedrock HackOMania 2025 Kitchen Copilot - AI-Powered Smart Cooking Assistant**  
 🚀 **Generate recipes from ingredients you have! AI-powered cooking assistant using LangChain, Neo4j, and GPT-4 Turbo.**  
 
-[![Try It Out!](https://tinyurl.com/bedrock-hackomania)](https://tinyurl.com/bedrock-hackomania)  
+🔗 Try It Out! **[https://tinyurl.com/bedrock-hackomania](https://tinyurl.com/bedrock-hackomania)**  
 
 ---
 
