@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Copilot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Kitchen Copilot</h1>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="upload-section">
+        <input type="file" id="imageUpload" accept="image/*">
+        <button onclick="uploadImage()">Identify Ingredients</button>
+    </div>
+
+    <!-- Ingredients Display Grid -->
+    <div class="ingredient-container">
+        <h2>Identified Ingredients</h2>
+        <div id="ingredientsGrid" class="grid"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

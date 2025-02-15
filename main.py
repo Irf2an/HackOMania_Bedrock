@@ -4,6 +4,21 @@ from PIL import Image
 import io
 import os
 
+def get_image_url(ingredient_name):
+    mealdb_url = f"https://www.themealdb.com/images/ingredients/{ingredient_name}.png"
+    response = requests.head(mealdb_url)
+    
+    if response.status_code == 200:
+        return mealdb_url
+    else:
+        # Fallback to Foodish API for a random food image
+        foodish_response = requests.get("https://foodish-api.herokuapp.com/api/")
+        if foodish_response.status_code == 200:
+            return foodish_response.json().get("image", "https://via.placeholder.com/80?text=No+Image")
+        else:
+            # Final fallback to a placeholder image
+            return "https://via.placeholder.com/80?text=No+Image"
+        
 # ---- APP CONFIGURATION ----
 st.set_page_config(page_title="Kitchen Copilot", page_icon="images/KitchenCopilot_Logo.png", layout="wide")
 
@@ -157,9 +172,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ---- IMAGE UPLOAD & PROCESSING SECTION ----
+# ---- Image Upload & Processing ----
 st.markdown("<div class='input-container'>📤 Upload Your Leftover Food</div>", unsafe_allow_html=True)
-uploaded_file = st.file_uploader("", type=["jpg", "png", "jpeg"])
+uploaded_file = st.file_uploader("Uploader", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
 
 if uploaded_file:
     col1, col2 = st.columns([1, 2])
@@ -171,89 +186,104 @@ if uploaded_file:
     # Convert image to bytes
     img_bytes = io.BytesIO()
     image.save(img_bytes, format="JPEG")
-    img_bytes.seek(0)  # Reset stream position
-    print("✅ Image uploaded successfully")
+    img_bytes.seek(0)
 
     if st.button("🔍 Identify Ingredients"):
         with st.spinner("Processing..."):
-            try:
-                # Log request details
-                print("🚀 Sending request to API...")
-                print(f"Image Size: {len(img_bytes.getvalue())} bytes")
+            data =  {'image_path': '/var/folders/27/fq0b11557z5281q2l7v0nk7w0000gn/T/image.jpg', 'ingredients': ['Maple syrup', 'mustard', 'ketchup', 'tortillas', 'milk', 'carrots', 'lettuce', 'spinach', 'bell peppers', 'onions', 'celery', 'apples', 'pears', 'bananas', 'oranges', 'almonds', 'dates', 'eggs', 'cheese', 'yogurt.'], 'message': 'Langraph sequence initiated', 'recipes': 'Dish Name: Savory Breakfast Tortillas with Fresh Fruit Salad\n\nIngredients:\n- Tortillas\n- Eggs\n- Cheese\n- Milk\n- Lettuce\n- Spinach\n- Bell peppers\n- Onions\n- Carrots\n- Celery\n- Apples\n- Pears\n- Bananas\n- Oranges\n- Almonds\n- Dates\n- Yogurt\n- Maple syrup\n- Mustard\n- Ketchup\n\nInstructions:\n**For the Savory Breakfast Tortillas:**\n1. **Prepare the Vegetables:**\n   - Finely chop the onions, bell peppers, carrots, and celery.\n   - Shred some lettuce and roughly chop the spinach.\n\n2. **Make the Egg Mixture:**\n   - In a bowl, beat the eggs and add a splash of milk, salt, and pepper to taste. Mix well.\n\n3. **Cook the Vegetables:**\n   - Heat a non-stick skillet over medium heat. Add a little oil or butter.\n   - Sauté the onions, bell peppers, carrots, and celery until they are soft.\n\n4. **Add the Eggs:**\n   - Pour the egg mixture into the skillet with the vegetables, stirring gently to combine.\n   - Cook until the eggs are set but still moist, stirring occasionally.\n\n5. **Prepare the Tortillas:**\n   - Warm the tortillas in another pan or in the microwave.\n\n6. **Assemble the Tortillas:**\n   - Place some shredded lettuce and chopped spinach on each tortilla.\n   - Spoon the cooked egg and vegetable mixture over the greens.\n   - Sprinkle shredded cheese on top.\n   - Optionally, you can add a drizzle of ketchup or mustard for extra flavor.\n\n7. **Serve:**\n   - Fold the tortillas over the filling and serve warm.\n\n**For the Fresh Fruit Salad:**\n1. **Prepare the Fruit:**\n   - Chop the apples, pears, bananas, and oranges into bite-sized pieces.\n   - Pit and chop the dates.\n\n2. **Mix the Fruit:**\n   - In a large bowl, combine all the chopped fruits and dates.\n   - Add a handful of almonds for crunch.\n\n3. **Dress the Salad:**\n   - In a small bowl, mix yogurt with a little maple syrup to create a sweet dressing.\n   - Pour the dressing over the fruit salad and toss gently to coat.\n\n4. **Chill and Serve:**\n   - Refrigerate the fruit salad for at least 30 minutes before serving to allow the flavors to meld.\n\n**Final Touch:**\n- Serve the savory breakfast tortillas alongside the chilled fruit salad for a balanced and nutritious meal. Enjoy your colorful and delicious breakfast!'}
+            st.session_state["ingredients"] = data.get("ingredients", [])
+            st.session_state["recipes"] = data.get("recipes", [])
+            # try:
+            #     response = requests.post(
+            #         "http://127.0.0.1:5000/GPT/send-image",
+            #         files={"file": ("image.jpg", img_bytes, "image/jpeg")}
+            #     )
 
-                # Send image to backend API
-                response = requests.post(
-                    "http://127.0.0.1:5000/GPT/send-image",
-                    files={"file": ("image.jpg", img_bytes, "image/jpeg")}
-                )
+            #     if response.status_code == 200:
+            #         data = response.json()
+            #         print("Response = ", data)
+            #         st.session_state["ingredients"] = data.get("ingredients", [])
+            #         st.session_state["recipes"] = data.get("recipes", [])
 
-                # Debug response
-                print(f"📡 Response Status Code: {response.status_code}")
-                print(f"📡 Response Text: {response.text}")
+            #         if not st.session_state["ingredients"]:
+            #             st.warning("No ingredients detected. Try a different image.")
+            #         else:
+            #             st.success("✅ Ingredients Identified!")
 
-                if response.status_code == 200:
-                    data = response.json()
-                    st.session_state["ingredients"] = data.get("ingredients", [])
-                    st.session_state["recipes"] = data.get("recipes", [])
+            #     else:
+            #         st.error(f"Error: {response.json().get('error', 'Unknown error')}")
 
-                    if not st.session_state["ingredients"]:
-                        st.warning("⚠️ No ingredients detected. Try a different image.")
-                    else:
-                        st.success("✅ Ingredients Identified!")
-                else:
-                    st.error(f"🚨 Error: {response.json().get('error', 'Unknown error')}")
-                    print(f"❌ API Error: {response.json()}")
+            # except Exception as e:
+            #     st.error(f"Failed to process image: {str(e)}")
 
-            except requests.exceptions.RequestException as req_err:
-                st.error(f"🔴 Request Exception: {str(req_err)}")
-                print(f"🔴 Request Exception: {req_err}")
-
-            except Exception as e:
-                st.error(f"❌ Failed to process image: {str(e)}")
-                print(f"❌ General Error: {e}")
-
-
-# ---- DISPLAY INGREDIENT LIST ONLY AFTER IDENTIFICATION ----
+# ---- DISPLAY INGREDIENT LIST IN RESPONSIVE GRID ----
 if "ingredients" in st.session_state and st.session_state["ingredients"]:
-    st.markdown("<div class='input-container'>📝 Identified Ingredients</div>", unsafe_allow_html=True)
+    st.markdown("<h2 class='input-container' style='text-align:center;'>📝 Identified Ingredients</h2>", unsafe_allow_html=True)
 
     if "editable_ingredients" not in st.session_state:
         st.session_state["editable_ingredients"] = list(st.session_state["ingredients"])
 
-    edited_ingredients = []
-    
+    # **Ensure Ingredient Inputs Exist in Session State**
     for i, ingredient in enumerate(st.session_state["editable_ingredients"]):
-        col1, col2, col3 = st.columns([2, 1, 1])  # Create columns for layout
+        key_name = f"ingredient_{i}"
+        if key_name not in st.session_state:
+            st.session_state[key_name] = ingredient  # Initialize input field value
 
-        with col1:
-            new_value = st.text_input("", ingredient, key=f"ingredient_{i}", label_visibility="collapsed")
-            edited_ingredients.append(new_value)
+    # Set up dynamic grid
+    cols_per_row = 4
+    num_ingredients = len(st.session_state["editable_ingredients"])
+    rows = (num_ingredients // cols_per_row) + (1 if num_ingredients % cols_per_row != 0 else 0)
 
-        with col2:
-            st.image(f"https://www.themealdb.com/images/ingredients/{new_value}.png", width=80)
+    for row in range(rows):
+        cols = st.columns(cols_per_row)
 
-        with col3:
-            if st.button("✏️", key=f"edit_{i}"):  # Edit button
-                st.session_state["editable_ingredients"][i] = new_value
-                st.rerun()
+        for col_index in range(cols_per_row):
+            ingredient_index = row * cols_per_row + col_index
+            if ingredient_index < num_ingredients:
+                ingredient = st.session_state["editable_ingredients"][ingredient_index]
+                image_url = get_image_url(ingredient)
 
-            if st.button("❌", key=f"delete_{i}"):  # Delete button
-                st.session_state["editable_ingredients"].remove(ingredient)
-                st.rerun()
+                with cols[col_index]:
+                    st.image(image_url, width=80)
 
-    # ---- ADD NEW INGREDIENT FUNCTIONALITY ----
-    new_ingredient = st.text_input("➕ Add a New Ingredient", placeholder="Enter ingredient name", label_visibility="collapsed")
+                    # Editable text input (No full rerun)
+                    def update_ingredient(index):
+                        st.session_state["editable_ingredients"][index] = st.session_state[f"ingredient_{index}"]
+
+                    st.text_input(
+                        "Ingredient", st.session_state[f"ingredient_{ingredient_index}"], 
+                        key=f"ingredient_{ingredient_index}",
+                        on_change=update_ingredient, 
+                        args=(ingredient_index,),
+                        label_visibility="collapsed"
+                    )
+
+                    # Buttons for editing and deleting ingredients
+                    col1, col2 = st.columns([1, 1])
+
+                    with col1:
+                        st.button("✏️", key=f"edit_{ingredient_index}", use_container_width=True)
+
+                    with col2:
+                        def remove_ingredient(index=ingredient_index):
+                            del st.session_state["editable_ingredients"][index]
+                            st.experimental_rerun()  # Only updates the affected item
+
+                        st.button("❌", key=f"delete_{ingredient_index}", on_click=remove_ingredient, args=(ingredient_index,), use_container_width=True)
+
+    # ---- Add New Ingredient Functionality ----
+    new_ingredient = st.text_input("➕ Add a New Ingredient", key="new_ingredient")
 
     if st.button("Add Ingredient", key="add_ingredient"):
         if new_ingredient and new_ingredient not in st.session_state["editable_ingredients"]:
             st.session_state["editable_ingredients"].append(new_ingredient)
             st.rerun()
 
-# ---- GENERATE RECIPES (AUTO-FINALIZES INGREDIENTS) ----
+# ---- Generate Recipes (Finalizes Ingredients) ----
 if "editable_ingredients" in st.session_state and len(st.session_state["editable_ingredients"]) > 0:
-    # ---- USER PREFERENCES ----
-    st.markdown("<div class='input-container'>🎯 Customize Your Recipe</div>", unsafe_allow_html=True)
+    st.markdown("<h2 class='input-container' style='text-align:center;'>🎯 Customize Your Recipe</h2>", unsafe_allow_html=True)
 
+    # Preferences Selection
     dietary_pref = st.selectbox(
         "Dietary Preferences", 
         ["🎯 Dietary Preferences", "None", "Vegetarian", "Vegan", "Gluten-Free", "Keto"], 
@@ -288,19 +318,13 @@ if "editable_ingredients" in st.session_state and len(st.session_state["editable
         "Cooking Time": cooking_time_pref if cooking_time_pref != "⏳ Cooking Time" else None,
         "Recipe Style": recipe_style_pref if recipe_style_pref != "🍽️ Recipe Style" else None
     }
-
+    
     user_preferences = {k: v for k, v in user_preferences.items() if v}
 
-    # Display Debugging Information (JSON Format)
-    st.markdown("### 🛠 Debugging Information")
-    st.json({
-        "Final Ingredients": st.session_state["editable_ingredients"],
-        "User Preferences": user_preferences
-    })
-
-    # Final Generate Recipes button
     if st.button("🍽️ Generate Recipes", key="generate_recipes"):
         st.session_state["final_ingredients"] = st.session_state["editable_ingredients"]
+        st.write("Selected Preferences:", user_preferences)
+        st.write("Final Ingredients:", st.session_state["final_ingredients"])
 
         with st.spinner("Creating delicious recipes..."):
             recipes = [
@@ -319,7 +343,7 @@ search_query = st.text_input("Search", placeholder="🔍 Search Recipe", label_v
 
 col1, col2 = st.columns([3, 1])
 with col1:
-    st.selectbox("", ["All Recipes", "Vegetarian", "Quick Meals", "Desserts"], key="cookbook_select")
+    st.selectbox("Select", ["All Recipes", "Vegetarian", "Quick Meals", "Desserts"], key="cookbook_select", label_visibility="collapsed")
 with col2:
     st.button("+ Add New", key="add_new")
 

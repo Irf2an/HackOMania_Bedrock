@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FAF9F6;
+    text-align: center;
+}
+
+.header {
+    background-color: #FF6F3C;
+    color: white;
+    padding: 15px;
+    font-size: 24px;
+}
+
+.upload-section {
+    margin: 20px;
+}
+
+button {
+    background-color: #FF6F3C;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.ingredient-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.ingredient-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+}
+
+.ingredient-card input {
+    display: block;
+    margin: 10px auto;
+    text-align: center;
+}
