@@ -2,6 +2,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.getElementById("registerForm");
     const loginForm = document.getElementById("loginForm");
 
+    function showMessage(elementId, message, isSuccess) {
+        const messageElement = document.getElementById(elementId);
+        messageElement.innerText = message;
+        messageElement.classList.remove("error-message", "success-message");
+
+        if (isSuccess) {
+            messageElement.classList.add("success-message");
+        } else {
+            messageElement.classList.add("error-message");
+        }
+    }
+
     if (registerForm) {
         registerForm.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -15,11 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await response.json();
-            document.getElementById("registerMessage").innerText = data.message || data.error;
+            showMessage("registerMessage", data.message || data.error, response.ok);
 
             if (response.ok) {
                 setTimeout(() => {
-                    window.location.href = "login.html";
+                    window.location.href = "/login";
                 }, 2000);
             }
         });
@@ -38,12 +50,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await response.json();
-            document.getElementById("loginMessage").innerText = data.message || data.error;
+            showMessage("loginMessage", data.message || data.error, response.ok);
 
             if (response.ok) {
                 localStorage.setItem("token", data.token);
                 setTimeout(() => {
-                    window.location.href = "index.html";
+                    window.location.href = "/";
                 }, 2000);
             }
         });

@@ -5,7 +5,7 @@ python-dotenv
 streamlit
 Flask
 Flask[async]
-flask_cors
+flask-cors
 
 # LangChain and AI Integration
 langgraph
@@ -21,7 +21,7 @@ faiss-cpu
 
 # Security & Authentication
 bcrypt
-pbkdf2
+passlib  # Includes pbkdf2_sha256
 pyjwt
 
 # Image Processing

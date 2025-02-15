@@ -22,7 +22,7 @@ body {
 /* Heading */
 .auth-container h2 {
     font-size: 24px;
-    color: #44572e;
+    color: #df6145;
     margin-bottom: 20px;
 }
 
@@ -40,7 +40,7 @@ body {
 .auth-container button {
     width: 100%;
     padding: 10px;
-    background-color: #44572e;
+    background-color: #df6145;
     color: white;
     border: none;
     border-radius: 5px;
@@ -51,7 +51,7 @@ body {
 }
 
 .auth-container button:hover {
-    background-color: #3a4d27;
+    background-color: #bc523b;
 }
 
 /* Links */
@@ -59,7 +59,7 @@ body {
     display: block;
     margin-top: 15px;
     font-size: 14px;
-    color: #44572e;
+    color: #df6145;
     text-decoration: none;
 }
 

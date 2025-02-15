@@ -11,11 +11,13 @@ import openai
 import asyncio
 from neo4j import GraphDatabase
 import bcrypt
+from passlib.hash import pbkdf2_sha256  # Import PBKDF2-SHA256 for hashing
 
 #  Load OpenAI API Key from .env
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
 CORS(app)  # Allow cross-origin requests if using a frontend
 
 # Neo4j Connection Setup
@@ -178,6 +180,7 @@ def find_user(tx, username):
     result = tx.run(query, username=username)
     return result.single()
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
@@ -190,16 +193,29 @@ def register():
     if not username or not password:
         return jsonify({"error": "Username and password are required"}), 400
 
-    hashed_password = bcrypt.hash(password)
+    # Generate a unique salt
+    salt = os.urandom(16).hex()
+    salted_password = f"{salt}{password}"
+
+    # Hash the salted password
+    hashed_password = pbkdf2_sha256.hash(salted_password)
 
     with driver.session() as session:
         existing_user = session.run("MATCH (u:User {username: $username}) RETURN u", username=username).single()
         if existing_user:
             return jsonify({"error": "Username already taken"}), 400
 
-        session.execute_write(create_user, username, hashed_password)
+        session.run(
+            """
+            CREATE (u:User {username: $username, password: $hashed_password, salt: $salt})
+            """,
+            username=username,
+            hashed_password=hashed_password,
+            salt=salt
+        )
 
     return jsonify({"message": "User registered successfully"}), 201
+
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -215,13 +231,29 @@ def login():
         return jsonify({"error": "Username and password are required"}), 400
 
     with driver.session() as session:
-        user_record = session.execute_read(find_user, username)
+        result = session.run(
+            """
+            MATCH (u:User {username: $username})
+            RETURN u.password AS password, u.salt AS salt
+            """,
+            username=username
+        )
+        record = result.single()
 
-        if user_record and bcrypt.verify(password, user_record["u.password"]):
+        if not record:
+            return jsonify({"error": "Invalid username or password"}), 401
+
+        stored_password = record["password"]
+        salt = record["salt"]
+
+        # Verify salted password
+        salted_password = f"{salt}{password}"
+        if pbkdf2_sha256.verify(salted_password, stored_password):
             flask_session["username"] = username
             return jsonify({"message": "Login successful"}), 200
         else:
             return jsonify({"error": "Invalid credentials"}), 401
+
 
 
 @app.route("/logout", methods=["POST"])
