@@ -17,7 +17,7 @@ app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests if using a frontend
 
 #  Store recognized ingredients temporarily (acts as session storage)
-ingredient_storage = {}
+ingredient_storage =  {'almond': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-iteRsunfw2mchNcngUukvnV8.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-14T22%3A54%3A35Z&ske=2025-02-15T22%3A54%3A35Z&sks=b&skv=2024-08-04&sig=vNHCRpqMQ%2BOb992vniPm2FtvkUVoaY%2BzITka30S314U%3D', 'pickled cucumber': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-aTkRFRMwrqVjiVXTC0QMX2zN.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T11%3A19%3A34Z&ske=2025-02-16T11%3A19%3A34Z&sks=b&skv=2024-08-04&sig=cqmp6kretJNCMKB4Q6eV00seAllwBHpImT2xnv3tNkM%3D', 'sparkling water': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-bouGkYPsiOZFfXeQ2qb2UxXi.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T12%3A11%3A45Z&ske=2025-02-16T12%3A11%3A45Z&sks=b&skv=2024-08-04&sig=bxP1B2lp85VI1yZtsmnaJW6mANAMpwmTiUmBOI8OWgY%3D', 'salad dressing': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-gIk3r9zKbNiMZP7dInSdr6O0.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T03%3A06%3A44Z&ske=2025-02-16T03%3A06%3A44Z&sks=b&skv=2024-08-04&sig=dIWavTLD%2BaaEIAElPV%2BIeXcGx7zOFd2OdAN%2BK64QCjo%3D', 'arugula': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-2Pa3OtXT50rf1WjxbLTjY19u.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T08%3A24%3A22Z&ske=2025-02-16T08%3A24%3A22Z&sks=b&skv=2024-08-04&sig=btVmRdaZ%2BZ83m9BAsTghW9jcu82BSRUwTtJDfmknS2Y%3D', 'sunflower seed': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-ZSdLZL3uK7YWrIVCdyCwPJsJ.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T13%3A35%3A25Z&ske=2025-02-16T13%3A35%3A25Z&sks=b&skv=2024-08-04&sig=FOqBsq0wDONqfmngPtnMbD0VsX2d8/8dhEHIrJOTHTk%3D', 'red cabbage': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-0uCzmJ3bkxqIIU6Aud8wkLGR.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T00%3A02%3A13Z&ske=2025-02-16T00%3A02%3A13Z&sks=b&skv=2024-08-04&sig=WLxmF7hJFz2kJTokNWYhuyXuU9AlWdt19RAZytjtVGY%3D', 'red bell pepper': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-tvUgr5Wtd4TUVyEx6RS45bff.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T17%3A17%3A15Z&ske=2025-02-16T17%3A17%3A15Z&sks=b&skv=2024-08-04&sig=4PDXpWOdPgrzcejKhmIdMD3%2BsBRNOYcK67d4omMSFr8%3D', 'pear': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-IKlumwsfICebBeqWEQqPsOGW.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T02%3A55%3A42Z&ske=2025-02-16T02%3A55%3A42Z&sks=b&skv=2024-08-04&sig=DQqhUM2YAT8aaiUpvkea0cq/xsWWhjWk2V13AdC2bm8%3D', 'pasta': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-qdLxqQP4HGRp9g0AgPQ8OAH7.png?st=2025-02-15T18%3A07%3A37Z&se=2025-02-15T20%3A07%3A37Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T05%3A40%3A24Z&ske=2025-02-16T05%3A40%3A24Z&sks=b&skv=2024-08-04&sig=ahLQ/TKM6AnAI4D4kTTFRmqYWON3hq2IxeqeDE7LuUg%3D', 'pickled carrot': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-CqOw6aR4yp4kyoghfcynm1Oh.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T14%3A51%3A37Z&ske=2025-02-16T14%3A51%3A37Z&sks=b&skv=2024-08-04&sig=4ep%2B4LuTOtaS8/Uvv9TpmsBVt/NzCvlNyqDYrpCpCvc%3D', 'bottled water': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-7nZbG3GVrVsBFeZZ0sG3tl2J.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T07%3A05%3A32Z&ske=2025-02-16T07%3A05%3A32Z&sks=b&skv=2024-08-04&sig=sD3/Maega7rg/ikUf1Gc009v6vxhxkbwgHZVgqlG8qg%3D'}
 
 @app.route('/')
 def index_page():
@@ -114,6 +114,7 @@ async def generate_dalle_image_async(ingredient):
 async def get_ingredient_images():
     """
     Accepts a list of ingredient names and returns DALL·E 2-generated images asynchronously.
+    Uses caching to avoid redundant API calls.
     """
     data = request.get_json()
     ingredients = data.get("ingredients")
@@ -121,11 +122,27 @@ async def get_ingredient_images():
     if not ingredients or not isinstance(ingredients, list):
         return jsonify({"error": "Invalid or missing ingredients list"}), 400
 
-    #  Run all image requests in parallel
-    tasks = [generate_dalle_image_async(ingredient) for ingredient in ingredients]
-    ingredient_images = await asyncio.gather(*tasks)
+    for ingredient in ingredients:
+        if ingredient in ingredient_storage:
+            print(f"{ingredient} exists in cache!")
+            
+    # Ingredients that need new images
+    new_ingredients = [ingredient for ingredient in ingredients if ingredient not in ingredient_storage]
+    
+    # Generate new images only for missing ingredients
+    if new_ingredients:
+        tasks = [generate_dalle_image_async(ingredient) for ingredient in new_ingredients]
+        new_images = await asyncio.gather(*tasks)
 
-    return jsonify(dict(zip(ingredients, ingredient_images))), 200
+        # Store newly generated images in cache
+        for ingredient, image in zip(new_ingredients, new_images):
+            ingredient_storage[ingredient] = image
+
+    # Retrieve all images from cache
+    ingredient_images = {ingredient: ingredient_storage[ingredient] for ingredient in ingredients}
+    print("ingredient_storage = ", ingredient_storage)
+
+    return jsonify(ingredient_images), 200
 
 
 if __name__ == "__main__":
