@@ -3,7 +3,7 @@ from PIL import Image
 import io
 import tempfile
 import os
-# from langraph_pipeline import recognise_ingredients, get_recipes  # ✅ Import Langraph functions (placeholders)
+from langraph_pipeline import recognise_ingredients, get_recipes  # ✅ Import Langraph functions (placeholders)
 
 app = Flask(__name__)
 
