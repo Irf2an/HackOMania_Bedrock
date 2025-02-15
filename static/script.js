@@ -1,4 +1,5 @@
 let ingredientList = [];
+let missingImages = [];
 
 document.addEventListener("DOMContentLoaded", function() {
     console.log("JavaScript Loaded");
@@ -25,6 +26,7 @@ function uploadImage() {
     .then(data => {
         if (data.ingredients) {
             ingredientList = data.ingredients.map(cleanIngredientName);
+            missingImages = [];
             displayIngredients();
             document.getElementById("ingredientsDiv").style.display = "block";
             document.getElementById("preferencesDiv").style.display = "block";
@@ -40,24 +42,47 @@ function cleanIngredientName(name) {
     return name.replace(/\.$/, "").trim();
 }
 
-// Function to update the ingredient grid dynamically
 function displayIngredients() {
+    console.log("🔵 Starting ingredient display...");
+
     let grid = document.getElementById("ingredientsGrid");
     grid.innerHTML = ""; // Clear existing content
+    let missingImagesList = []; // Collect missing ingredient names
+    let imageLoadPromises = []; // Array to track image loads
+
+    console.log("🟡 Current ingredient list:", ingredientList);
 
     ingredientList.forEach((ingredient, index) => {
+        let cleanedName = cleanIngredientName(ingredient);
+        console.log(`🟢 Processing ingredient: ${cleanedName} (Index: ${index})`);
+
         let card = document.createElement("div");
         card.className = "ingredient-card";
 
         // Image Element
         let img = document.createElement("img");
-        img.src = `https://www.themealdb.com/images/ingredients/${ingredient}.png`;
+        let imgLoaded = new Promise((resolve) => {
+            img.onload = () => {
+                console.log(`✅ Image loaded for ${cleanedName}`);
+                resolve();
+            };
+
+            img.onerror = () => {
+                console.warn(`⚠️ Image not found for ${cleanedName}, adding to missingImagesList`);
+                missingImagesList.push(cleanedName);
+                resolve();
+            };
+        });
+
+        imageLoadPromises.push(imgLoaded);
+        img.src = `https://www.themealdb.com/images/ingredients/${cleanedName}.png`;
 
         // Input Field for Editing
         let input = document.createElement("input");
         input.type = "text";
-        input.value = ingredient;
+        input.value = cleanedName;
         input.onchange = function () {
+            console.log(`📝 Ingredient changed: ${cleanedName} → ${this.value}`);
             updateIngredient(index, this.value);
         };
 
@@ -65,6 +90,7 @@ function displayIngredients() {
         let deleteBtn = document.createElement("button");
         deleteBtn.innerText = "❌";
         deleteBtn.onclick = function () {
+            console.log(`❌ Deleting ingredient: ${cleanedName}`);
             deleteIngredient(index);
         };
 
@@ -74,7 +100,53 @@ function displayIngredients() {
         card.appendChild(deleteBtn);
         grid.appendChild(card);
     });
+
+    // **Wait for all images to load or fail before checking missing images**
+    Promise.all(imageLoadPromises).then(() => {
+        console.log("🟠 Missing images list:", missingImagesList);
+        if (missingImagesList.length > 0) {
+            console.log("🔴 Fetching missing images from backend...");
+            fetchMissingImages(missingImagesList);
+        } else {
+            console.log("✅ All images loaded successfully, no missing images.");
+        }
+    });
 }
+
+// Function to fetch missing ingredient images from backend
+function fetchMissingImages(missingList) {
+    console.log("🔵 Sending missing ingredients request:", JSON.stringify({ missing_ingredients: missingList }));
+
+    fetch("/GPT/missing-url", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ ingredients: missingList })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("🟢 Received missing image data from backend:", data);
+
+        // Replace missing images with new URLs from backend
+        ingredientList.forEach((ingredient, index) => {
+            let cleanedName = cleanIngredientName(ingredient);
+
+            if (data[cleanedName]) {
+                let imgElements = document.querySelectorAll(".ingredient-card img");
+                console.log(`🔄 Updating image for ${cleanedName} → ${data[cleanedName]}`);
+                imgElements[index].src = data[cleanedName]; // Replace broken image
+                imgElements[index].style.display = "block"; // Show new image
+            }
+        });
+
+        console.log("✅ All missing images updated successfully.");
+    })
+    .catch(error => {
+        console.error("🔴 Error fetching missing images:", error);
+    });
+}
+
 
 // Function to update an ingredient
 function updateIngredient(index, newValue) {
