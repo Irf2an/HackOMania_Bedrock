@@ -180,48 +180,110 @@ if uploaded_file:
             st.session_state["ingredients"] = detected_ingredients
             st.success("✅ Ingredients Identified!")
 
-# ---- INGREDIENT LIST ----
-st.markdown("<div class='input-container'>📝 Identified Ingredients</div>", unsafe_allow_html=True)
-
+# ---- DISPLAY INGREDIENT LIST ONLY AFTER IDENTIFICATION ----
 if "ingredients" in st.session_state:
-    ingredient_list = st.session_state["ingredients"]
-    cols = st.columns(len(ingredient_list))  # Dynamic layout
+    st.markdown("<div class='input-container'>📝 Identified Ingredients</div>", unsafe_allow_html=True)
 
-    for i, ingredient in enumerate(ingredient_list):
+    if "editable_ingredients" not in st.session_state:
+        st.session_state["editable_ingredients"] = st.session_state["ingredients"]
+
+    edited_ingredients = []
+    cols = st.columns(len(st.session_state["editable_ingredients"]))
+
+    for i, ingredient in enumerate(st.session_state["editable_ingredients"]):
         with cols[i]:
-            st.markdown(f"""
-                <div class='ingredient-card'>
-                    <img src="https://www.themealdb.com/images/ingredients/{ingredient}.png" width='80'><br>
-                    <strong>{ingredient}</strong>
-                </div>
-            """, unsafe_allow_html=True)
+            # Editable text input
+            new_value = st.text_input(f"{ingredient}", ingredient, key=f"ingredient_{i}")
+            edited_ingredients.append(new_value)
 
-# ---- PREFERENCE SELECTION ----
-dietary_options = ["🎯 Dietary Preferences", "None", "Vegetarian", "Vegan", "Gluten-Free", "Keto"]
+            # Display ingredient image dynamically
+            st.image(f"https://www.themealdb.com/images/ingredients/{new_value}.png", width=80)
 
-dietary_pref = st.selectbox("", dietary_options, index=0)
+    # ---- ADD NEW INGREDIENT FUNCTIONALITY ----
+    new_ingredient = st.text_input("➕ Add a New Ingredient", placeholder="Enter ingredient name")
 
-# Prevent users from selecting the placeholder as a valid option
-if dietary_pref == "🎯 Dietary Preferences":
-    dietary_pref = None  # Treat it as no selection
+    if st.button("Add Ingredient"):
+        if new_ingredient and new_ingredient not in st.session_state["editable_ingredients"]:
+            st.session_state["editable_ingredients"].append(new_ingredient)
+            st.rerun()
 
+    # ---- REMOVE INGREDIENT FUNCTIONALITY ----
+    ingredient_to_remove = st.selectbox("❌ Remove Ingredient", st.session_state["editable_ingredients"])
 
-# ---- GENERATE RECIPE BUTTON ----
-if "ingredients" in st.session_state and st.button("🍽️ Generate Recipes"):
-    with st.spinner("Creating delicious recipes..."):
-        # Mock API Response - Replace with real API Call
-        recipes = [
-            {"name": "Tomato Cheese Salad", "ingredients": ["Tomato", "Cheese"], "instructions": "Mix everything and serve."},
-            {"name": "Grilled Cheese Sandwich", "ingredients": ["Cheese", "Bread"], "instructions": "Grill with butter and serve."}
-        ]
-        st.markdown("<div class='input-container'>🍛 Suggested Recipes</div>", unsafe_allow_html=True)
-        for recipe in recipes:
-            st.markdown(f"### {recipe['name']}")
-            st.write(f"**Ingredients:** {', '.join(recipe['ingredients'])}")
-            st.write(f"**Instructions:** {recipe['instructions']}")
+    if st.button("Remove Ingredient"):
+        if ingredient_to_remove in st.session_state["editable_ingredients"]:
+            st.session_state["editable_ingredients"].remove(ingredient_to_remove)
+            st.rerun()
+
+# ---- GENERATE RECIPES (AUTO-FINALIZES INGREDIENTS) ----
+if "editable_ingredients" in st.session_state and len(st.session_state["editable_ingredients"]) > 0:
+    # ---- USER PREFERENCES ----
+    st.markdown("<div class='input-container'>🎯 Customize Your Recipe</div>", unsafe_allow_html=True)
+
+    # Dietary Preferences
+    dietary_pref = st.selectbox(
+        "Dietary Preferences", 
+        ["🎯 Dietary Preferences", "None", "Vegetarian", "Vegan", "Gluten-Free", "Keto"], 
+        index=0, 
+        label_visibility="collapsed"
+    )
+
+    # Preferred Seasoning Level
+    seasoning_pref = st.selectbox(
+        "Seasoning Preference",
+        ["🌶️ Spice Level", "Mild", "Medium", "Spicy", "No Preference"],
+        index=0,
+        label_visibility="collapsed"
+    )
+
+    # Cooking Time Preference
+    cooking_time_pref = st.selectbox(
+        "Cooking Time",
+        ["⏳ Cooking Time", "Quick (Under 30 min)", "Moderate (30-60 min)", "Slow Cooked (1hr+)", "No Preference"],
+        index=0,
+        label_visibility="collapsed"
+    )
+
+    # Recipe Style Preference
+    recipe_style_pref = st.selectbox(
+        "Recipe Style",
+        ["🍽️ Recipe Style", "Classic", "Vegan", "Spicy", "Mediterranean", "Asian Fusion", "No Preference"],
+        index=0,
+        label_visibility="collapsed"
+    )
+
+    # Store user selections
+    user_preferences = {
+        "Dietary Preference": dietary_pref if dietary_pref != "🎯 Dietary Preferences" else None,
+        "Seasoning Preference": seasoning_pref if seasoning_pref != "🌶️ Spice Level" else None,
+        "Cooking Time": cooking_time_pref if cooking_time_pref != "⏳ Cooking Time" else None,
+        "Recipe Style": recipe_style_pref if recipe_style_pref != "🍽️ Recipe Style" else None
+    }
+
+    # Remove None values (i.e., if users didn't choose anything)
+    user_preferences = {k: v for k, v in user_preferences.items() if v}
+
+    # Display selections for debugging (Remove this in production)
+    st.write("Selected Preferences:", user_preferences)
+
+    if st.button("🍽️ Generate Recipes"):
+        st.session_state["ingredients"] = st.session_state["editable_ingredients"]  # Auto-finalize
+        st.session_state["finalized"] = True
+
+        with st.spinner("Creating delicious recipes..."):
+            recipes = [
+                {"name": "Tomato Cheese Salad", "ingredients": ["Tomato", "Cheese"], "instructions": "Mix everything and serve."},
+                {"name": "Grilled Cheese Sandwich", "ingredients": ["Cheese", "Bread"], "instructions": "Grill with butter and serve."}
+            ]
+            st.markdown("<div class='input-container'>🍛 Suggested Recipes</div>", unsafe_allow_html=True)
+            for recipe in recipes:
+                st.markdown(f"### {recipe['name']}")
+                st.write(f"**Ingredients:** {', '.join(recipe['ingredients'])}")
+                st.write(f"**Instructions:** {recipe['instructions']}")
+
 
 # ---- SEARCH & FILTER SECTION ----
-search_query = st.text_input("", placeholder="🔍 Search Recipe")
+search_query = st.text_input("Search", placeholder="🔍 Search Recipe", label_visibility="collapsed")
 
 col1, col2 = st.columns([3, 1])
 with col1:
@@ -230,13 +292,15 @@ with col2:
     st.button("+ Add New", key="add_new")
 
 # ---- MOCK RECIPE DATA ----
+image_folder = "images"
+
 recipes = [
-    {"name": "Applesauce Cake", "time": "45 minutes", "image": "https://via.placeholder.com/150"},
-    {"name": "Lemon, Garlic and Thyme Roast Chicken", "time": "45 minutes", "image": "https://via.placeholder.com/150"},
-    {"name": "Quick and Easy Caprese Salad", "time": "45 minutes", "image": "https://via.placeholder.com/150"},
-    {"name": "Quinoa Tabouli with Lemon Garlic Shrimp", "time": "45 minutes", "image": "https://via.placeholder.com/150"},
-    {"name": "Falafels With Tahini Sauce", "time": "45 minutes", "image": "https://via.placeholder.com/150"},
-    {"name": "Eggless Brownies", "time": "45 minutes", "image": "https://via.placeholder.com/150"},
+    {"name": "Applesauce Cake", "time": "45 minutes", "image": os.path.join(image_folder, "AppleSauceCake.jpg")},
+    {"name": "Lemon, Garlic and Thyme Roast Chicken", "time": "45 minutes", "image": os.path.join(image_folder, "RoastChicken.jpeg")},
+    {"name": "Quick and Easy Caprese Salad", "time": "45 minutes", "image": os.path.join(image_folder, "CapreseSalad.jpeg")},
+    {"name": "Quinoa Tabouli with Lemon Garlic Shrimp", "time": "45 minutes", "image": os.path.join(image_folder, "GarlicShrimp.jpeg")},
+    {"name": "Falafels With Tahini Sauce", "time": "45 minutes", "image": os.path.join(image_folder, "Falafels.jpg")},
+    {"name": "Eggless Brownies", "time": "45 minutes", "image": os.path.join(image_folder, "Brownie.jpeg")},
 ]
 
 # ---- RECIPE CATEGORIES ----
@@ -244,22 +308,14 @@ st.markdown("<div class='input-container'>🍔 American Recipes</div>", unsafe_a
 cols = st.columns(3)
 for i, recipe in enumerate(recipes[:3]):
     with cols[i]:
-        st.markdown(f"""
-            <div class='recipe-card'>
-                <img src='{recipe["image"]}' width='100%' style='border-radius:10px'><br>
-                <strong>{recipe["name"]}</strong><br>
-                ⏳ {recipe["time"]}
-            </div>
-        """, unsafe_allow_html=True)
+        st.image(recipe["image"], width=30, use_column_width=True)
+        st.markdown(f"**{recipe['name']}**")
+        st.markdown(f"⏳ {recipe['time']}")
 
 st.markdown("<div class='input-container'>🍕 European Recipes</div>", unsafe_allow_html=True)
 cols = st.columns(3)
 for i, recipe in enumerate(recipes[3:]):
     with cols[i]:
-        st.markdown(f"""
-            <div class='recipe-card'>
-                <img src='{recipe["image"]}' width='100%' style='border-radius:10px'><br>
-                <strong>{recipe["name"]}</strong><br>
-                ⏳ {recipe["time"]}
-            </div>
-        """, unsafe_allow_html=True)
+        st.image(recipe["image"], width=30, use_column_width=True)
+        st.markdown(f"**{recipe['name']}**")
+        st.markdown(f"⏳ {recipe['time']}")
