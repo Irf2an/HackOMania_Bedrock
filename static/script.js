@@ -4,7 +4,38 @@ let ingredientImages = {}; // Store ingredient images
 
 document.addEventListener("DOMContentLoaded", function() {
     console.log("JavaScript Loaded");
+
+    // ✅ Add event listener for the "View Favorites" button
+    document.getElementById("favourites-btn").addEventListener("click", function () {
+        loadFavoriteRecipes();
+    });
+
+    // ✅ Add event listener for the "Add Image" button
+    document.getElementById("image-btn").addEventListener("click", function () {
+        toggleSections("imageUploadSection");
+    });
+
+    // ✅ Add event listener for the "View Favorites" button
+    document.getElementById("favourites-btn").addEventListener("click", function () {
+        toggleSections("recipeResults");
+        loadFavoriteRecipes(); // Load favorites when clicked
+    });
+
 });
+
+// ✅ Function to toggle visibility of sections
+function toggleSections(visibleSectionId) {
+    let sections = ["imageUploadSection", "imagePreviewSection", "ingredientsDiv", "preferencesDiv", "recipeResults"];
+
+    sections.forEach((sectionId) => {
+        let section = document.getElementById(sectionId);
+        if (section) {
+            section.style.display = sectionId === visibleSectionId ? "block" : "none";
+        }
+    });
+
+    console.log(`🔄 Switched to: ${visibleSectionId}`);
+}
 
 // ✅ Adds a new ingredient and fetches its image
 function addIngredient() {
@@ -133,11 +164,11 @@ function generateRecipes() {
     .then(data => {
         console.log("✅ Recipe Response:", data);
         
-        // ✅ Hide spinner once the response is received
-        hideLoadingSpinner();
-        
         // Display recipes
         displayRecipe(data);
+
+        // ✅ Hide spinner once the response is received
+        hideLoadingSpinner();
     })
     .catch(error => {
         console.error("🔴 Error generating recipe:", error);
@@ -641,4 +672,146 @@ function deleteIngredient(index) {
     } else {
         console.warn(`⚠️ Could not find UI element for ${ingredientName}`);
     }
+}
+
+// ✅ Fetch and display favorite recipes
+async function loadFavoriteRecipes() {
+    console.log("Fetching favorite recipes...");
+
+    // ✅ Show loading spinner
+    showFavoritesSpinner();
+
+    try {
+        let response = await fetch("/favorites"); // API call to get favorite recipes
+        let data = await response.json();
+
+        if (!data.favorites || data.favorites.length === 0) {
+            document.getElementById("recipeResults").innerHTML = "<p class='error-message'>⚠️ No favorite recipes found.</p>";
+            return;
+        }
+
+        console.log("Favorite Recipes:", data.favorites);
+        displayFavorites(data.favorites); // Call function to display favorites
+
+        // ✅ Hide spinner once the response is received
+        hideFavoritesSpinner();
+    } catch (error) {
+        console.error("Error fetching favorites:", error);
+
+        // ✅ Hide spinner on error
+        hideFavoritesSpinner();
+
+        document.getElementById("recipeResults").innerHTML = "<p class='error-message'>⚠️ Error loading favorites.</p>";
+    }
+}
+
+// ✅ Function to show the spinner
+function showFavoritesSpinner() {
+    let spinnerDiv = document.getElementById("favoritesSpinnerDiv");
+    spinnerDiv.style.display = "block"; // Show spinner
+}
+
+// ✅ Function to hide the spinner
+function hideFavoritesSpinner() {
+    let spinnerDiv = document.getElementById("favoritesSpinnerDiv");
+    spinnerDiv.style.display = "none"; // Hide spinner
+}
+
+
+// ✅ Display favorite recipes (similar to displayRecipe)
+function displayFavorites(favorites) {
+    let recipeContainer = document.getElementById("recipeResults");
+
+    if (!recipeContainer) {
+        console.error("❌ ERROR: recipeResults div not found!");
+        return;
+    }
+
+    recipeContainer.style.display = "block";
+    recipeContainer.innerHTML = ""; // Clear previous content
+
+    let recipeTitle = document.createElement("h2");
+    recipeTitle.innerHTML = "⭐ <span>Your Favorite Recipes</span>";
+    recipeTitle.classList.add("recipe-header");
+    recipeContainer.appendChild(recipeTitle);
+
+    let recipeList = document.createElement("div");
+    recipeList.className = "recipe-grid";
+
+    let recipeCardsPromises = favorites.map(async (recipe) => {
+        if (!recipe || !recipe.recipe_name) {
+            console.warn("⚠️ Skipping invalid favorite recipe:", recipe);
+            return null;
+        }
+
+        let recipeCard = document.createElement("div");
+        recipeCard.className = "recipe-card";
+
+        let dishName = document.createElement("h3");
+        dishName.innerText = recipe.recipe_name;
+        recipeCard.appendChild(dishName);
+
+        let recipeImage = document.createElement("img");
+        recipeImage.className = "recipe-img";
+        recipeImage.src = await fetchRecipeImage(recipe.recipe_name);
+        recipeCard.appendChild(recipeImage);
+
+        // ✅ Create Favorite Button using Font Awesome
+        let favoriteButton = document.createElement("button");
+        favoriteButton.classList.add("fa", "fa-heart", "favorite-btn", "favorited"); // Always favorited
+        favoriteButton.setAttribute("data-recipe-name", recipe.recipe_name);
+
+        favoriteButton.addEventListener("click", function () {
+            toggleFavorite(favoriteButton, recipe.recipe_name, recipe.ingredients, recipe.instructions);
+        });
+
+        recipeCard.appendChild(favoriteButton);
+
+        if (Array.isArray(recipe.ingredients)) {
+            let ingredientsBox = document.createElement("div");
+            ingredientsBox.className = "ingredients-box";
+
+            let ingredientsTitle = document.createElement("h4");
+            ingredientsTitle.innerText = "🛒 Ingredients";
+            ingredientsBox.appendChild(ingredientsTitle);
+
+            let ingredientsList = document.createElement("ul");
+            recipe.ingredients.forEach((ingredient) => {
+                let li = document.createElement("li");
+                li.innerText = capitalizeWords(ingredient);
+                ingredientsList.appendChild(li);
+            });
+
+            ingredientsBox.appendChild(ingredientsList);
+            recipeCard.appendChild(ingredientsBox);
+        }
+
+        if (Array.isArray(recipe.instructions)) {
+            let instructionsBox = document.createElement("div");
+            instructionsBox.className = "instructions-box";
+
+            let instructionsTitle = document.createElement("h4");
+            instructionsTitle.innerText = "📝 Instructions";
+            instructionsBox.appendChild(instructionsTitle);
+
+            let instructionsList = document.createElement("ol");
+            recipe.instructions.forEach((step) => {
+                let li = document.createElement("li");
+                li.innerHTML = removeStepNumbering(step);
+                instructionsList.appendChild(li);
+            });
+
+            instructionsBox.appendChild(instructionsList);
+            recipeCard.appendChild(instructionsBox);
+        }
+
+        return recipeCard;
+    });
+
+    Promise.all(recipeCardsPromises).then((recipeCards) => {
+        recipeCards.forEach((card) => {
+            if (card) recipeList.appendChild(card);
+        });
+        recipeContainer.appendChild(recipeList);
+    });
 }

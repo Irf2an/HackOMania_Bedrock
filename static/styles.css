@@ -231,6 +231,7 @@ body {
 
 /* 📷 Image Button */
 .add-image button,
+.view-favourites button,
 .filter button {
     background-color: #f1f1f1;
     border: 1px solid #e3e3e3;
@@ -246,12 +247,14 @@ body {
 
 /* Button Hover Effect */
 .add-image button:hover,
+.view-favourites button:hover,
 .filter button:hover {
     background-color: #e3e3e3;
 }
 
 /* Button Icons */
 .add-image button img,
+.view-favourites button img,
 .filter button img {
     width: 22px;  /* Adjust size */
     height: 22px;
@@ -266,6 +269,7 @@ body {
     }
 
     .add-image button,
+    .view-favourites button
     .filter button {
         width: 40px;
         height: 40px;
