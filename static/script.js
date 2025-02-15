@@ -169,6 +169,45 @@ function hideLoadingSpinner() {
 }
 
 
+// ✅ Fetch user's favorite recipes from backend
+async function fetchFavoriteRecipes() {
+    try {
+        let response = await fetch("/favorites");
+        let data = await response.json();
+        return data.favorites || [];
+    } catch (error) {
+        console.error("Error fetching favorites:", error);
+        return [];
+    }
+}
+
+// ✅ Toggle favorite status and update class
+function toggleFavorite(button, recipeName, ingredients, instructions) {
+    let isFavorited = button.classList.contains("favorited");
+    let action = isFavorited ? "unfavorite" : "favorite";
+
+    fetch("/favorite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            recipe_name: recipeName,
+            ingredients: ingredients,
+            instructions: instructions,
+            action: action
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+
+        // ✅ Toggle class to change color (always keeps fa-heart)
+        button.classList.toggle("favorited", !isFavorited);
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+
+// ✅ Function to display recipes with correct heart status
 async function displayRecipe(recipeData) {
     console.log("recipeData = ", recipeData);
     let recipeContainer = document.getElementById("recipeResults");
@@ -178,21 +217,17 @@ async function displayRecipe(recipeData) {
         return;
     }
 
-    // Show the recipe container when data is available
     recipeContainer.style.display = "block";
-    recipeContainer.innerHTML = ""; // Clear previous content
+    recipeContainer.innerHTML = "";
 
-    // Recipe Title
     let recipeTitle = document.createElement("h2");
     recipeTitle.innerHTML = "🍽️ <span>Recommended Recipes</span>";
     recipeTitle.classList.add("recipe-header");
     recipeContainer.appendChild(recipeTitle);
 
-    // Create recipe grid container
     let recipeList = document.createElement("div");
     recipeList.className = "recipe-grid";
 
-    // ✅ Parse the JSON string from API
     let recipes;
     try {
         recipes = JSON.parse(recipeData.recipes);
@@ -203,12 +238,13 @@ async function displayRecipe(recipeData) {
     }
 
     if (!recipes || Object.keys(recipes).length === 0) {
-        console.error("🚨 ERROR: No valid recipes found in response", recipes);
         recipeContainer.innerHTML = "<p class='error-message'>⚠️ No recipes generated. Try again!</p>";
         return;
     }
 
-    // ✅ Fetch all images before rendering UI
+    // ✅ Fetch user's favorite recipes before rendering
+    let favoriteRecipes = await fetchFavoriteRecipes();
+
     let recipeCardsPromises = Object.values(recipes).map(async (recipe) => {
         if (!recipe || !recipe["Dish Name"]) {
             console.warn("⚠️ Skipping invalid recipe:", recipe);
@@ -218,23 +254,32 @@ async function displayRecipe(recipeData) {
         let recipeCard = document.createElement("div");
         recipeCard.className = "recipe-card";
 
-        // Dish Name
         let dishName = document.createElement("h3");
         dishName.innerText = recipe["Dish Name"];
         recipeCard.appendChild(dishName);
 
-        // ✅ Create placeholder image first
         let recipeImage = document.createElement("img");
         recipeImage.className = "recipe-img";
-        recipeImage.src = "https://cdn-icons-png.flaticon.com/128/4461/4461744.png"; // Default while loading
+        recipeImage.src = await fetchRecipeImage(recipe["Dish Name"]);
         recipeCard.appendChild(recipeImage);
 
-        // ✅ Fetch image asynchronously and update the image source
-        let imageUrl = await fetchRecipeImage(recipe["Dish Name"]);
-        console.log(`✅ Image URL received for ${recipe["Dish Name"]}: ${imageUrl}`);
-        recipeImage.src = imageUrl || "https://cdn-icons-png.flaticon.com/128/4461/4461744.png"; // Update image
+        // ✅ Create Heart Button using Font Awesome
+        let favoriteButton = document.createElement("button");
+        favoriteButton.className = "fa fa-heart favorite-btn"; // Default: empty heart
+        favoriteButton.setAttribute("data-recipe-name", recipe["Dish Name"]);
 
-        // Ingredients List
+        // ✅ Check if recipe is in favorites and update class
+        if (favoriteRecipes.some(fav => fav.recipe_name === recipe["Dish Name"])) {
+            favoriteButton.classList.add("fa-heart"); // Full heart if favorited
+            favoriteButton.classList.add("favorited");
+        }
+
+        favoriteButton.addEventListener("click", function () {
+            toggleFavorite(favoriteButton, recipe["Dish Name"], recipe["Ingredients"], recipe["Instructions"]);
+        });
+
+        recipeCard.appendChild(favoriteButton);
+
         if (Array.isArray(recipe["Ingredients"])) {
             let ingredientsBox = document.createElement("div");
             ingredientsBox.className = "ingredients-box";
@@ -254,7 +299,6 @@ async function displayRecipe(recipeData) {
             recipeCard.appendChild(ingredientsBox);
         }
 
-        // Instructions List
         if (Array.isArray(recipe["Instructions"])) {
             let instructionsBox = document.createElement("div");
             instructionsBox.className = "instructions-box";
@@ -274,20 +318,17 @@ async function displayRecipe(recipeData) {
             recipeCard.appendChild(instructionsBox);
         }
 
-        return recipeCard; // Return the completed recipe card
+        return recipeCard;
     });
 
-    // ✅ Wait for all images before displaying recipes
     let recipeCards = await Promise.all(recipeCardsPromises);
-
-    // Append each completed card to the grid
     recipeCards.forEach((card) => {
         if (card) recipeList.appendChild(card);
     });
 
-    // Append the grid to the container
     recipeContainer.appendChild(recipeList);
 }
+
 
 // ✅ Function to capitalize ingredients
 function capitalizeWords(str) {
@@ -601,4 +642,3 @@ function deleteIngredient(index) {
         console.warn(`⚠️ Could not find UI element for ${ingredientName}`);
     }
 }
-

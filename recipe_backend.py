@@ -27,7 +27,8 @@ NEO4J_PASSWORD = os.getenv("AURA_PASSWORD")
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 
 #  Store recognized ingredients temporarily (acts as session storage)
-ingredient_storage =  {'almond': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-iteRsunfw2mchNcngUukvnV8.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-14T22%3A54%3A35Z&ske=2025-02-15T22%3A54%3A35Z&sks=b&skv=2024-08-04&sig=vNHCRpqMQ%2BOb992vniPm2FtvkUVoaY%2BzITka30S314U%3D', 'pickled cucumber': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-aTkRFRMwrqVjiVXTC0QMX2zN.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T11%3A19%3A34Z&ske=2025-02-16T11%3A19%3A34Z&sks=b&skv=2024-08-04&sig=cqmp6kretJNCMKB4Q6eV00seAllwBHpImT2xnv3tNkM%3D', 'sparkling water': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-bouGkYPsiOZFfXeQ2qb2UxXi.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T12%3A11%3A45Z&ske=2025-02-16T12%3A11%3A45Z&sks=b&skv=2024-08-04&sig=bxP1B2lp85VI1yZtsmnaJW6mANAMpwmTiUmBOI8OWgY%3D', 'salad dressing': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-gIk3r9zKbNiMZP7dInSdr6O0.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T03%3A06%3A44Z&ske=2025-02-16T03%3A06%3A44Z&sks=b&skv=2024-08-04&sig=dIWavTLD%2BaaEIAElPV%2BIeXcGx7zOFd2OdAN%2BK64QCjo%3D', 'arugula': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-2Pa3OtXT50rf1WjxbLTjY19u.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T08%3A24%3A22Z&ske=2025-02-16T08%3A24%3A22Z&sks=b&skv=2024-08-04&sig=btVmRdaZ%2BZ83m9BAsTghW9jcu82BSRUwTtJDfmknS2Y%3D', 'sunflower seed': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-ZSdLZL3uK7YWrIVCdyCwPJsJ.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T13%3A35%3A25Z&ske=2025-02-16T13%3A35%3A25Z&sks=b&skv=2024-08-04&sig=FOqBsq0wDONqfmngPtnMbD0VsX2d8/8dhEHIrJOTHTk%3D', 'red cabbage': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-0uCzmJ3bkxqIIU6Aud8wkLGR.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T00%3A02%3A13Z&ske=2025-02-16T00%3A02%3A13Z&sks=b&skv=2024-08-04&sig=WLxmF7hJFz2kJTokNWYhuyXuU9AlWdt19RAZytjtVGY%3D', 'red bell pepper': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-tvUgr5Wtd4TUVyEx6RS45bff.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T17%3A17%3A15Z&ske=2025-02-16T17%3A17%3A15Z&sks=b&skv=2024-08-04&sig=4PDXpWOdPgrzcejKhmIdMD3%2BsBRNOYcK67d4omMSFr8%3D', 'pear': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-IKlumwsfICebBeqWEQqPsOGW.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T02%3A55%3A42Z&ske=2025-02-16T02%3A55%3A42Z&sks=b&skv=2024-08-04&sig=DQqhUM2YAT8aaiUpvkea0cq/xsWWhjWk2V13AdC2bm8%3D', 'pasta': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-qdLxqQP4HGRp9g0AgPQ8OAH7.png?st=2025-02-15T18%3A07%3A37Z&se=2025-02-15T20%3A07%3A37Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T05%3A40%3A24Z&ske=2025-02-16T05%3A40%3A24Z&sks=b&skv=2024-08-04&sig=ahLQ/TKM6AnAI4D4kTTFRmqYWON3hq2IxeqeDE7LuUg%3D', 'pickled carrot': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-CqOw6aR4yp4kyoghfcynm1Oh.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T14%3A51%3A37Z&ske=2025-02-16T14%3A51%3A37Z&sks=b&skv=2024-08-04&sig=4ep%2B4LuTOtaS8/Uvv9TpmsBVt/NzCvlNyqDYrpCpCvc%3D', 'bottled water': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-7nZbG3GVrVsBFeZZ0sG3tl2J.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T07%3A05%3A32Z&ske=2025-02-16T07%3A05%3A32Z&sks=b&skv=2024-08-04&sig=sD3/Maega7rg/ikUf1Gc009v6vxhxkbwgHZVgqlG8qg%3D'}
+# ingredient_storage =  {'almond': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-iteRsunfw2mchNcngUukvnV8.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-14T22%3A54%3A35Z&ske=2025-02-15T22%3A54%3A35Z&sks=b&skv=2024-08-04&sig=vNHCRpqMQ%2BOb992vniPm2FtvkUVoaY%2BzITka30S314U%3D', 'pickled cucumber': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-aTkRFRMwrqVjiVXTC0QMX2zN.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T11%3A19%3A34Z&ske=2025-02-16T11%3A19%3A34Z&sks=b&skv=2024-08-04&sig=cqmp6kretJNCMKB4Q6eV00seAllwBHpImT2xnv3tNkM%3D', 'sparkling water': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-bouGkYPsiOZFfXeQ2qb2UxXi.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T12%3A11%3A45Z&ske=2025-02-16T12%3A11%3A45Z&sks=b&skv=2024-08-04&sig=bxP1B2lp85VI1yZtsmnaJW6mANAMpwmTiUmBOI8OWgY%3D', 'salad dressing': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-gIk3r9zKbNiMZP7dInSdr6O0.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T03%3A06%3A44Z&ske=2025-02-16T03%3A06%3A44Z&sks=b&skv=2024-08-04&sig=dIWavTLD%2BaaEIAElPV%2BIeXcGx7zOFd2OdAN%2BK64QCjo%3D', 'arugula': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-2Pa3OtXT50rf1WjxbLTjY19u.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T08%3A24%3A22Z&ske=2025-02-16T08%3A24%3A22Z&sks=b&skv=2024-08-04&sig=btVmRdaZ%2BZ83m9BAsTghW9jcu82BSRUwTtJDfmknS2Y%3D', 'sunflower seed': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-ZSdLZL3uK7YWrIVCdyCwPJsJ.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T13%3A35%3A25Z&ske=2025-02-16T13%3A35%3A25Z&sks=b&skv=2024-08-04&sig=FOqBsq0wDONqfmngPtnMbD0VsX2d8/8dhEHIrJOTHTk%3D', 'red cabbage': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-0uCzmJ3bkxqIIU6Aud8wkLGR.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T00%3A02%3A13Z&ske=2025-02-16T00%3A02%3A13Z&sks=b&skv=2024-08-04&sig=WLxmF7hJFz2kJTokNWYhuyXuU9AlWdt19RAZytjtVGY%3D', 'red bell pepper': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-tvUgr5Wtd4TUVyEx6RS45bff.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T17%3A17%3A15Z&ske=2025-02-16T17%3A17%3A15Z&sks=b&skv=2024-08-04&sig=4PDXpWOdPgrzcejKhmIdMD3%2BsBRNOYcK67d4omMSFr8%3D', 'pear': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-IKlumwsfICebBeqWEQqPsOGW.png?st=2025-02-15T18%3A07%3A36Z&se=2025-02-15T20%3A07%3A36Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T02%3A55%3A42Z&ske=2025-02-16T02%3A55%3A42Z&sks=b&skv=2024-08-04&sig=DQqhUM2YAT8aaiUpvkea0cq/xsWWhjWk2V13AdC2bm8%3D', 'pasta': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-qdLxqQP4HGRp9g0AgPQ8OAH7.png?st=2025-02-15T18%3A07%3A37Z&se=2025-02-15T20%3A07%3A37Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T05%3A40%3A24Z&ske=2025-02-16T05%3A40%3A24Z&sks=b&skv=2024-08-04&sig=ahLQ/TKM6AnAI4D4kTTFRmqYWON3hq2IxeqeDE7LuUg%3D', 'pickled carrot': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-CqOw6aR4yp4kyoghfcynm1Oh.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T14%3A51%3A37Z&ske=2025-02-16T14%3A51%3A37Z&sks=b&skv=2024-08-04&sig=4ep%2B4LuTOtaS8/Uvv9TpmsBVt/NzCvlNyqDYrpCpCvc%3D', 'bottled water': 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-Uj9FJRmMKLcHA4gqcnprCSG2/user-oheEB9tdBKLOOZv1WdUAtztR/img-7nZbG3GVrVsBFeZZ0sG3tl2J.png?st=2025-02-15T18%3A07%3A35Z&se=2025-02-15T20%3A07%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-02-15T07%3A05%3A32Z&ske=2025-02-16T07%3A05%3A32Z&sks=b&skv=2024-08-04&sig=sD3/Maega7rg/ikUf1Gc009v6vxhxkbwgHZVgqlG8qg%3D'}
+ingredient_storage = {}
 
 @app.route('/')
 def index_page():
@@ -260,6 +261,82 @@ def login():
 def logout():
     flask_session.pop("username", None)
     return jsonify({"message": "Logged out successfully"}), 200
+
+
+@app.route("/favorite", methods=["POST"])
+def favorite_recipe():
+    """
+    Allows users to favorite/unfavorite a recipe and store full recipe details.
+    """
+    if "username" not in flask_session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.get_json()
+    username = flask_session["username"]
+    recipe_name = data.get("recipe_name")
+    ingredients = data.get("ingredients", [])
+    instructions = data.get("instructions", [])
+    action = data.get("action")  # "favorite" or "unfavorite"
+
+    if not recipe_name or action not in ["favorite", "unfavorite"]:
+        return jsonify({"error": "Invalid request"}), 400
+
+    with driver.session() as session:
+        if action == "favorite":
+            session.run(
+                """
+                MATCH (u:User {username: $username})
+                MERGE (r:Recipe {name: $recipe_name})
+                SET r.ingredients = $ingredients, r.instructions = $instructions
+                MERGE (u)-[:FAVORITED]->(r)
+                """,
+                username=username,
+                recipe_name=recipe_name,
+                ingredients=ingredients,
+                instructions=instructions
+            )
+            return jsonify({"message": "Recipe favorited"}), 200
+
+        elif action == "unfavorite":
+            session.run(
+                """
+                MATCH (u:User {username: $username})-[f:FAVORITED]->(r:Recipe {name: $recipe_name})
+                DELETE f
+                """,
+                username=username, recipe_name=recipe_name
+            )
+            return jsonify({"message": "Recipe unfavorited"}), 200
+
+
+@app.route("/favorites", methods=["GET"])
+def get_favorites():
+    """
+    Retrieves a user's favorite recipes along with full details.
+    """
+    if "username" not in flask_session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    username = flask_session["username"]
+
+    with driver.session() as session:
+        result = session.run(
+            """
+            MATCH (u:User {username: $username})-[:FAVORITED]->(r:Recipe)
+            RETURN r.name AS recipe_name, r.ingredients AS ingredients, r.instructions AS instructions
+            """,
+            username=username
+        )
+        favorite_recipes = [
+            {
+                "recipe_name": record["recipe_name"],
+                "ingredients": record["ingredients"],
+                "instructions": record["instructions"]
+            }
+            for record in result
+        ]
+
+    return jsonify({"favorites": favorite_recipes}), 200
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8071))  # Heroku requires using PORT env var
