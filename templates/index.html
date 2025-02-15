@@ -19,36 +19,73 @@
         </div>
     </header>
 
-
+    <!-- Top Bar -->
     <div class="top-bar">
-        <div class="dropdown-container">
+        <!-- First Row: Cookbook Selector & Add New -->
+        <div class="cookbook-row">
             <select id="cookbookSelect">
                 <option value="general">📖 General Cookbook</option>
                 <option value="favorites">⭐ Favorites</option>
             </select>
-            <button class="add-btn">➕ Add new</button>
+            <button id="add-new-btn" class="add-btn">➕ Add new</button>
         </div>
     
-        <div class="search-bar">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search recipe...">
-        </div>
-    </div>
+        <!-- Second Row: Search Bar, Image & Filter -->
+        <div class="search-filter-container">
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Search recipe...">
+            </div>
     
-    <!-- Image Upload Section -->
-    <div class="upload-container">
-        <label for="imageUpload" class="upload-btn">📷 Choose an Image</label>
-        <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)">
+            <!-- Image Upload Button -->
+            <div class="add-image">
+                <button id="image-btn">
+                    <img src="https://cdn-icons-png.flaticon.com/128/3342/3342137.png" alt="Image">
+                </button>
+            </div>
+    
+            <!-- Filter Button -->
+            <div class="filter">
+                <button id="filter-btn">
+                    <img src="https://cdn-icons-png.flaticon.com/128/1159/1159641.png" alt="Filter">
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div class="upload-container">
-        <img id="preview" class="image-preview" style="display: none;" />
-        <button id="identifyBtn" class="identify-btn" onclick="uploadImage()" style="display: none;">
+    <!-- Fridge Upload Section (Initially Hidden) -->
+    <div id="imageUploadSection" class="upload-container" style="display: none;">
+        
+        <!-- Child-friendly instructions -->
+        <div class="instruction-box">
+            <h2>📸 Take a Picture of Your Fridge!</h2>
+            <p>
+                Open your fridge, take a picture of what's inside, and we'll help you
+                create delicious recipes from your ingredients! 🍽️✨
+            </p>
+        </div>
+
+        <!-- Fridge-styled Upload Button -->
+        <label for="imageUpload" id="uploadLabel" class="fridge-btn">
+            <div class="fridge-door">
+                <img src="https://cdn-icons-png.flaticon.com/128/395/395547.png" alt="Fridge Icon">
+                <p>📷 Snap Your Fridge!</p>
+            </div>
+        </label>
+        <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)" style="display: none;">
+
+    </div>
+
+    <!-- Image Preview Section (Initially Hidden) -->
+    <div id="imagePreviewSection" class="upload-container" style="display: none;">
+        <img id="preview" class="image-preview" alt="Fridge Preview" />
+        <button id="identifyBtn" class="identify-btn" onclick="uploadImage()">
             🔍 Identify Ingredients
         </button>
     </div>
-    
 
+    <div id="ingredientsSpinnerDiv"></div>
+    
     <!-- Identified Ingredients Section -->
     <div id="ingredientsDiv" class="ingredient-container" style="display:none;">
         <h2>🍽️ Identified Ingredients</h2>
@@ -57,7 +94,7 @@
         <!-- Add New Ingredient -->
         <div class="add-ingredient">
             <input type="text" id="newIngredient" placeholder="Add Ingredient">
-            <button onclick="addIngredient()">➕ Add</button>
+            <button onclick="addIngredient()"> Add</button>
         </div>
     </div>
 
@@ -72,6 +109,14 @@
             <option value="Vegan">Vegan</option>
             <option value="Gluten-Free">Gluten-Free</option>
             <option value="Keto">Keto</option>
+        </select>
+        
+        <label>Level of Difficulty:</label>
+        <select id="difficultyPref">
+            <option value="No Preference">No Preference</option>
+            <option value="Easy">Easy</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
         </select>
 
         <label>Seasoning Level:</label>
@@ -104,9 +149,7 @@
     </div>
 
     <!-- Recipe Display -->
-    <div id="recipeResults" class="recipe-container">
-        <h2>test</h2>
-    </div>
+    <div id="recipeResults" class="recipe-container" style="display: none;"></div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
