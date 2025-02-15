@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Copilot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Kitchen Copilot</h1>
+    </header>
+
+    <!-- Upload Section -->
+    <div class="upload-section">
+        <label for="imageUpload" class="custom-file-upload">📤 Choose an Image</label>
+        <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)">
+        <img id="preview" class="image-preview" style="display: none;" />
+
+        <!-- Identify Ingredients Button (Hidden Initially) -->
+        <button id="identifyBtn" class="identify-btn" onclick="uploadImage()" style="display: none;">
+            🔍 Identify Ingredients
+        </button>
+    </div>
+
+
+    <!-- Identified Ingredients Section -->
+    <div id="ingredientsDiv" class="ingredient-container" style="display:none;">
+        <h2>🍽️ Identified Ingredients</h2>
+        <div id="ingredientsGrid" class="grid"></div>
+        
+        <!-- Add New Ingredient -->
+        <div class="add-ingredient">
+            <input type="text" id="newIngredient" placeholder="Add Ingredient">
+            <button onclick="addIngredient()">➕ Add</button>
+        </div>
+    </div>
+
+    <!-- Preferences Selection -->
+    <div id="preferencesDiv" class="preferences-container" style="display:none;">
+        <h2>🎯 Customize Your Recipe</h2>
+
+        <label>Dietary Preferences:</label>
+        <select id="dietaryPref">
+            <option value="None">None</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Vegan">Vegan</option>
+            <option value="Gluten-Free">Gluten-Free</option>
+            <option value="Keto">Keto</option>
+        </select>
+
+        <label>Seasoning Level:</label>
+        <select id="seasoningPref">
+            <option value="No Preference">No Preference</option>
+            <option value="Mild">Mild</option>
+            <option value="Medium">Medium</option>
+            <option value="Spicy">Spicy</option>
+        </select>
+
+        <label>Cooking Time:</label>
+        <select id="cookingTimePref">
+            <option value="No Preference">No Preference</option>
+            <option value="Quick (Under 30 min)">Quick (Under 30 min)</option>
+            <option value="Moderate (30-60 min)">Moderate (30-60 min)</option>
+            <option value="Slow Cooked (1hr+)">Slow Cooked (1hr+)</option>
+        </select>
+
+        <label>Recipe Style:</label>
+        <select id="recipeStylePref">
+            <option value="No Preference">No Preference</option>
+            <option value="Classic">Classic</option>
+            <option value="Vegan">Vegan</option>
+            <option value="Spicy">Spicy</option>
+            <option value="Mediterranean">Mediterranean</option>
+            <option value="Asian Fusion">Asian Fusion</option>
+        </select>
+
+        <button onclick="generateRecipes()">🍽️ Generate Recipes</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
