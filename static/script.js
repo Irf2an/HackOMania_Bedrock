@@ -601,3 +601,4 @@ function deleteIngredient(index) {
         console.warn(`⚠️ Could not find UI element for ${ingredientName}`);
     }
 }
+

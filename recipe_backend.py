@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, session
+from flask import Flask, request, jsonify, render_template, session as flask_session
 from flask_cors import CORS
 from PIL import Image
 import io
@@ -163,6 +163,71 @@ async def get_ingredient_images():
 
     return jsonify(ingredient_images), 200
 
+
+def create_user(tx, username, hashed_password):
+    query = """
+    MERGE (u:User {username: $username})
+    ON CREATE SET u.password = $hashed_password
+    RETURN u.username
+    """
+    result = tx.run(query, username=username, hashed_password=hashed_password)
+    return result.single()
+
+def find_user(tx, username):
+    query = "MATCH (u:User {username: $username}) RETURN u.password"
+    result = tx.run(query, username=username)
+    return result.single()
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "GET":
+        return render_template("register.html")
+
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+
+    hashed_password = bcrypt.hash(password)
+
+    with driver.session() as session:
+        existing_user = session.run("MATCH (u:User {username: $username}) RETURN u", username=username).single()
+        if existing_user:
+            return jsonify({"error": "Username already taken"}), 400
+
+        session.execute_write(create_user, username, hashed_password)
+
+    return jsonify({"message": "User registered successfully"}), 201
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+
+    with driver.session() as session:
+        user_record = session.execute_read(find_user, username)
+
+        if user_record and bcrypt.verify(password, user_record["u.password"]):
+            flask_session["username"] = username
+            return jsonify({"message": "Login successful"}), 200
+        else:
+            return jsonify({"error": "Invalid credentials"}), 401
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    flask_session.pop("username", None)
+    return jsonify({"message": "Logged out successfully"}), 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8071))  # Heroku requires using PORT env var
