@@ -1,15 +1,15 @@
-## **🍽️ Bedrock HackOMania 2025 Kitchen Copilot - AI-Powered Smart Cooking Assistant**  
+# **🍽️ Bedrock HackOMania 2025 Kitchen Copilot - AI-Powered Smart Cooking Assistant**  
 🚀 **Generate recipes from ingredients you have! AI-powered cooking assistant using LangChain, Neo4j, and GPT-4 Turbo.**  
 
 🔗 Try It Out! **[https://tinyurl.com/bedrock-hackomania](https://tinyurl.com/bedrock-hackomania)**  
 
 ---
 
-### **🔧 Installation & Setup**
+## **🔧 Installation & Setup**
 ### **1️⃣ Clone the Repository**
 ```bash
 git clone https://github.com/Irf2an/HackOMania_Bedrock
-cd Kitchen-Copilot
+cd HackOMania_Bedrock
 ```
 
 ### **2️⃣ Install Dependencies**
@@ -17,12 +17,30 @@ cd Kitchen-Copilot
 pip install -r requirements.txt
 ```
 
-### **3️⃣ Run the Backend**
+### **3️⃣ Set Up Environment Variables**
+Create a **`.env` file** inside the project folder and add the following:  
+
+```
+# 🔑 OpenAI API Key for GPT-4 & Image Generation
+OPENAI_API_KEY=
+
+# 🔗 Neo4j Database Credentials (AuraDB Cloud / Local Instance)
+AURA_CONNECTION_URI=
+AURA_USERNAME=
+AURA_PASSWORD=
+
+# 🔒 Flask Secret Key for Secure Sessions
+FLASK_SECRET_KEY=
+```
+- **Replace the placeholders** with **your actual API keys and credentials**.
+- **Flask Secret Key** is needed for **secure user authentication**.
+
+### **4️⃣ Run the Backend**
 ```bash
 python recipe_backend.py
 ```
 
-### **4️⃣ Access the Web App**
+### **5️⃣ Access the Web App**
 Open your browser and visit:  
 🔗 **[http://127.0.0.1:8071/](http://127.0.0.1:8071/)**  
 
