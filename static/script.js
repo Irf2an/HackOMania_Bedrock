@@ -497,14 +497,58 @@ function capitalizeWords(str) {
 // ✅ Function to update an ingredient
 function updateIngredient(index, newValue) {
     let cleanedValue = cleanIngredientName(newValue);
-    console.log(`Updated ${ingredientList[index]} to ${cleanedValue}`);
+
+    if (!cleanedValue) {
+        alert("Please enter a valid ingredient.");
+        return;
+    }
+
+    if (ingredientList.includes(cleanedValue)) {
+        alert("Ingredient already exists.");
+        return;
+    }
+
+    console.log(`📝 Updating ${ingredientList[index]} to ${cleanedValue}`);
+
+    // Update the ingredient list
     ingredientList[index] = cleanedValue;
-    fetchAndDisplayAllImages(); // Reload images after edit
+
+    // Try fetching the image from TheMealDB first
+    let imgURL = `https://www.themealdb.com/images/ingredients/${cleanedValue}.png`;
+
+    let imgLoad = new Image();
+    imgLoad.src = imgURL;
+    imgLoad.onload = function () {
+        console.log(`✅ Image found for ${cleanedValue}: ${imgURL}`);
+        ingredientImages[cleanedValue] = imgURL;
+        displayIngredients();
+    };
+    
+    imgLoad.onerror = function () {
+        console.warn(`⚠️ Image not found for ${cleanedValue}, requesting from backend...`);
+        fetchMissingIngredientImage(cleanedValue);
+    };
 }
 
 // ✅ Function to delete an ingredient
 function deleteIngredient(index) {
-    console.log(`Deleted ${ingredientList[index]}`);
-    ingredientList.splice(index, 1); // Remove from list
-    fetchAndDisplayAllImages(); // Reload images after delete
+    let ingredientName = ingredientList[index];
+    console.log(`❌ Deleting ${ingredientName}`);
+
+    // Remove from ingredientList
+    ingredientList.splice(index, 1);
+
+    // Remove from ingredientImages if exists
+    delete ingredientImages[ingredientName];
+
+    // Directly remove the ingredient card from the UI
+    let grid = document.getElementById("ingredientsGrid");
+    let cards = grid.getElementsByClassName("ingredient-card");
+
+    if (cards[index]) {
+        cards[index].remove();
+        console.log(`✅ Removed ${ingredientName} from UI`);
+    } else {
+        console.warn(`⚠️ Could not find UI element for ${ingredientName}`);
+    }
 }
