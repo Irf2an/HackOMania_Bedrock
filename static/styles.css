@@ -178,11 +178,13 @@ button:hover {
 
 /* ----- Preview Image Styling ----- */
 #preview {
-    display: block;
-    max-width: 100%;
+    display: flex;
+    align-items: center;
+    max-width: 300px;
     height: auto;
-    margin: 15px auto;
+    margin-right: 0px;
     border-radius: 10px;
+    padding: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -277,19 +279,10 @@ button:hover {
     display: none; /* Hides the default button but keeps functionality */
 }
 
-/* Style the uploaded image preview */
-#preview {
-    max-width: 100%;
-    height: auto;
-    margin-top: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
 /* Identify Ingredients Button */
 .identify-btn {
     display: block;
-    margin: 15px auto;
+    margin: 0px;
     padding: 12px 20px;
     font-size: 16px;
     font-weight: bold;
@@ -303,4 +296,56 @@ button:hover {
 
 .identify-btn:hover {
     background-color: #e65c2a;
+}
+
+/* 🔍 Search Bar */
+.upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Adds spacing between elements */
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 8px;
+    width: 350px;
+    background-color: white;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 5px;
+}
+
+.search-icon {
+    margin-right: 8px;
+    font-size: 16px;
+    color: #888;
+}
+
+/* 📤 Image Upload Section */
+.upload-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.custom-file-upload {
+    background-color: #ff6f61;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-file-upload:hover {
+    background-color: #e65c50;
 }
