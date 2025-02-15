@@ -68,6 +68,49 @@ def filter_ingredients(state: OverallIngredientState):
     ingredients_str = chain.invoke({"ingredients": ", ".join(state['ingredients'])}).content
     return {"filtered_ingredients": ingredients_str.split(",") if "None" not in ingredients_str else []}
 
+# ✅ Filter recipes based on user preferences
+def filter_recipe(state: OverallRecipeState):
+    if not state['recipe_text']:
+        return {"filtered_recipes": {}}
+    
+    messages = [
+        {"role": "system", "content": "You are a food expert ensuring that recipes match user preferences."},
+        {"role": "user", "content": f"""
+            You have received the following recipes:
+            {state['recipe_text']}
+            
+            The user has the following preferences:
+            - Dietary Preference: {state['preferences']['Dietary Preference']}
+            - Recipe Style: {state['preferences']['Recipe Style']}
+            - Seasoning Preference: {state['preferences']['Seasoning Preference']}
+            - Cooking Time: {state['preferences']['Cooking Time']}
+            - Difficulty Level: {state['preferences']['Difficulty Level']}
+            
+            Review each recipe and remove any that do not align with the preferences.
+            If any recipes contain non-compliant ingredients, remove them.
+            
+            Format the response as a JSON object containing only the recipes that pass:
+            {{
+                "recipe 1": {{
+                    "Dish Name": "[Dish Name]",
+                    "Ingredients": ["ingredient1", "ingredient2", "ingredient3"],
+                    "Instructions": [
+                        "Step 1: ...",
+                        "Step 2: ...",
+                        "Step 3: ..."
+                    ]
+                }},
+                "recipe 2": {{ ... }},
+                "recipe 3": {{ ... }}
+            }}
+            
+            If no recipes match, return an empty JSON object: `{{}}`
+        """}
+    ]
+
+    response = llm.invoke(messages)
+    filtered_recipes = response.content if hasattr(response, "content") else "{}"
+
 #  Generate recipe
 def get_recipes(state: OverallRecipeState):
     messages = [
@@ -134,6 +177,8 @@ compiled_ingredient_graph = ingredient_graph.compile()
 
 recipe_graph = StateGraph(OverallRecipeState)
 recipe_graph.add_node("generate_recipes", RunnableLambda(get_recipes))
+recipe_graph.add_node("filter_recipes", RunnableLambda(filter_recipe))  # ✅ New node
+recipe_graph.add_edge("generate_recipes", "filter_recipes")  # ✅ Filter after generating
 recipe_graph.add_edge("generate_recipes", END)
 recipe_graph.set_entry_point("generate_recipes")
 compiled_recipe_graph = recipe_graph.compile()
