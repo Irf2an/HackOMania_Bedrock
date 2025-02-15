@@ -1,42 +1,56 @@
 from langchain.chat_models import ChatOpenAI
-from langraph.graph import StateGraph
+from langchain.schema import SystemMessage, HumanMessage
+import os
 
-# Define State for LLM1 output
-class ExtractionState:
-    query: str
-    ingredients: list
-
-# Define State for LLM2 validation output
-class ValidationState:
-    ingredients: list
-    valid_ingredients: list
-
-# Initialize LLM models (You need an OpenAI API key)
+# Initialize OpenAI models
 llm1 = ChatOpenAI(model_name="gpt-4", temperature=0.3)
 llm2 = ChatOpenAI(model_name="gpt-4", temperature=0.3)
 
-# Define Langraph workflow
-workflow = StateGraph(ExtractionState)
+# Step 1: Extract Ingredients from Query
+def extract_ingredients(query):
+    messages = [
+        SystemMessage(content="You are an expert chef who extracts ingredients from user queries."),
+        HumanMessage(content=f"Extract only food ingredients from this query: {query}")
+    ]
+    response = llm1(messages).content
+    return response.split(", ")
 
-@workflow.add_node()
-def extract_ingredients(state: ExtractionState):
-    response = llm1.predict(f"Extract food ingredients from this query: {state.query}")
-    state.ingredients = response.split(", ")
-    return state
+# Step 2: Filter Non-Ingredients
+def filter_non_ingredients(ingredients):
+    messages = [
+        SystemMessage(content="Filter out non-food items from the given ingredient list."),
+        HumanMessage(content=f"Remove non-food items from: {', '.join(ingredients)}")
+    ]
+    response = llm1(messages).content
+    return response.split(", ")
 
-@workflow.add_node()
-def validate_ingredients(state: ExtractionState):
-    valid_response = llm2.predict(f"Validate these as real ingredients: {', '.join(state.ingredients)}")
-    state.valid_ingredients = [i.strip() for i in valid_response.split(",")]
-    return state
+# Step 3: Validate Ingredients
+def validate_ingredients(ingredients):
+    messages = [
+        SystemMessage(content="Validate if the following ingredients are real food ingredients."),
+        HumanMessage(content=f"Validate these as real ingredients: {', '.join(ingredients)}")
+    ]
+    response = llm2(messages).content
+    return response.split(", ")
 
-# Define flow
-workflow.set_entry_point(extract_ingredients)
-workflow.add_edge(extract_ingredients, validate_ingredients)
-workflow.compile()
+# Step 4: Generate Final Recipe
+def generate_recipe(valid_ingredients):
+    messages = [
+        SystemMessage(content="You are a master chef. Create a recipe using the given ingredients."),
+        HumanMessage(content=f"Create a recipe using: {', '.join(valid_ingredients)}")
+    ]
+    response = llm2(messages).content
+    return response
 
-# Function to run the pipeline
+# Main pipeline function
 def process_query(query):
-    initial_state = ExtractionState(query=query, ingredients=[])
-    output_state = workflow.invoke(initial_state)
-    return output_state.valid_ingredients
+    extracted_ingredients = extract_ingredients(query)
+    filtered_ingredients = filter_non_ingredients(extracted_ingredients)
+    
+    # This step is where users manually review ingredients via UI
+    user_approved_ingredients = filtered_ingredients  # Placeholder for UI interaction
+
+    valid_ingredients = validate_ingredients(user_approved_ingredients)
+    final_recipe = generate_recipe(valid_ingredients)
+
+    return {"valid_ingredients": valid_ingredients, "final_recipe": final_recipe}
