@@ -180,39 +180,43 @@ if uploaded_file:
             st.session_state["ingredients"] = detected_ingredients
             st.success("✅ Ingredients Identified!")
 
+import streamlit as st
+import json
+
 # ---- DISPLAY INGREDIENT LIST ONLY AFTER IDENTIFICATION ----
 if "ingredients" in st.session_state:
     st.markdown("<div class='input-container'>📝 Identified Ingredients</div>", unsafe_allow_html=True)
 
     if "editable_ingredients" not in st.session_state:
-        st.session_state["editable_ingredients"] = st.session_state["ingredients"]
+        st.session_state["editable_ingredients"] = list(st.session_state["ingredients"])
 
     edited_ingredients = []
-    cols = st.columns(len(st.session_state["editable_ingredients"]))
-
+    
     for i, ingredient in enumerate(st.session_state["editable_ingredients"]):
-        with cols[i]:
-            # Editable text input
-            new_value = st.text_input(f"{ingredient}", ingredient, key=f"ingredient_{i}")
+        col1, col2, col3 = st.columns([2, 1, 1])  # Create columns for layout
+        
+        with col1:
+            new_value = st.text_input("", ingredient, key=f"ingredient_{i}", label_visibility="collapsed")
             edited_ingredients.append(new_value)
 
-            # Display ingredient image dynamically
+        with col2:
             st.image(f"https://www.themealdb.com/images/ingredients/{new_value}.png", width=80)
 
-    # ---- ADD NEW INGREDIENT FUNCTIONALITY ----
-    new_ingredient = st.text_input("➕ Add a New Ingredient", placeholder="Enter ingredient name")
+        with col3:
+            if st.button("✏️", key=f"edit_{i}"):  
+                st.session_state["editable_ingredients"][i] = new_value
+                st.rerun()
 
-    if st.button("Add Ingredient"):
+            if st.button("❌", key=f"delete_{i}"):  
+                st.session_state["editable_ingredients"].remove(ingredient)
+                st.rerun()
+
+    # ---- ADD NEW INGREDIENT FUNCTIONALITY ----
+    new_ingredient = st.text_input("➕ Add a New Ingredient", placeholder="Enter ingredient name", label_visibility="collapsed")
+
+    if st.button("Add Ingredient", key="add_ingredient"):
         if new_ingredient and new_ingredient not in st.session_state["editable_ingredients"]:
             st.session_state["editable_ingredients"].append(new_ingredient)
-            st.rerun()
-
-    # ---- REMOVE INGREDIENT FUNCTIONALITY ----
-    ingredient_to_remove = st.selectbox("❌ Remove Ingredient", st.session_state["editable_ingredients"])
-
-    if st.button("Remove Ingredient"):
-        if ingredient_to_remove in st.session_state["editable_ingredients"]:
-            st.session_state["editable_ingredients"].remove(ingredient_to_remove)
             st.rerun()
 
 # ---- GENERATE RECIPES (AUTO-FINALIZES INGREDIENTS) ----
@@ -220,7 +224,6 @@ if "editable_ingredients" in st.session_state and len(st.session_state["editable
     # ---- USER PREFERENCES ----
     st.markdown("<div class='input-container'>🎯 Customize Your Recipe</div>", unsafe_allow_html=True)
 
-    # Dietary Preferences
     dietary_pref = st.selectbox(
         "Dietary Preferences", 
         ["🎯 Dietary Preferences", "None", "Vegetarian", "Vegan", "Gluten-Free", "Keto"], 
@@ -228,7 +231,6 @@ if "editable_ingredients" in st.session_state and len(st.session_state["editable
         label_visibility="collapsed"
     )
 
-    # Preferred Seasoning Level
     seasoning_pref = st.selectbox(
         "Seasoning Preference",
         ["🌶️ Spice Level", "Mild", "Medium", "Spicy", "No Preference"],
@@ -236,7 +238,6 @@ if "editable_ingredients" in st.session_state and len(st.session_state["editable
         label_visibility="collapsed"
     )
 
-    # Cooking Time Preference
     cooking_time_pref = st.selectbox(
         "Cooking Time",
         ["⏳ Cooking Time", "Quick (Under 30 min)", "Moderate (30-60 min)", "Slow Cooked (1hr+)", "No Preference"],
@@ -244,7 +245,6 @@ if "editable_ingredients" in st.session_state and len(st.session_state["editable
         label_visibility="collapsed"
     )
 
-    # Recipe Style Preference
     recipe_style_pref = st.selectbox(
         "Recipe Style",
         ["🍽️ Recipe Style", "Classic", "Vegan", "Spicy", "Mediterranean", "Asian Fusion", "No Preference"],
@@ -252,7 +252,6 @@ if "editable_ingredients" in st.session_state and len(st.session_state["editable
         label_visibility="collapsed"
     )
 
-    # Store user selections
     user_preferences = {
         "Dietary Preference": dietary_pref if dietary_pref != "🎯 Dietary Preferences" else None,
         "Seasoning Preference": seasoning_pref if seasoning_pref != "🌶️ Spice Level" else None,
@@ -260,15 +259,18 @@ if "editable_ingredients" in st.session_state and len(st.session_state["editable
         "Recipe Style": recipe_style_pref if recipe_style_pref != "🍽️ Recipe Style" else None
     }
 
-    # Remove None values (i.e., if users didn't choose anything)
     user_preferences = {k: v for k, v in user_preferences.items() if v}
 
-    # Display selections for debugging (Remove this in production)
-    st.write("Selected Preferences:", user_preferences)
+    # Display Debugging Information (JSON Format)
+    st.markdown("### 🛠 Debugging Information")
+    st.json({
+        "Final Ingredients": st.session_state["editable_ingredients"],
+        "User Preferences": user_preferences
+    })
 
-    if st.button("🍽️ Generate Recipes"):
-        st.session_state["ingredients"] = st.session_state["editable_ingredients"]  # Auto-finalize
-        st.session_state["finalized"] = True
+    # Final Generate Recipes button
+    if st.button("🍽️ Generate Recipes", key="generate_recipes"):
+        st.session_state["final_ingredients"] = st.session_state["editable_ingredients"]
 
         with st.spinner("Creating delicious recipes..."):
             recipes = [
