@@ -180,19 +180,23 @@ function generateRecipes() {
     let recipeStylePref = document.getElementById("recipeStylePref").value;
 
     let userPreferences = {
-        dietaryPreference: dietaryPref,
-        seasoningPreference: seasoningPref,
-        cookingTime: cookingTimePref,
-        recipeStyle: recipeStylePref,
-        ingredients: ingredientList
+        "Dietary Preference": dietaryPref,
+        "Seasoning Preference": seasoningPref,
+        "Cooking Time": cookingTimePref,
+        "Recipe Style": recipeStylePref
     };
 
-    console.log("📡 Sending data to generate recipe:", userPreferences);
+    let requestData = {
+        ingredients: ingredientList,
+        preferences: userPreferences
+    };
+
+    console.log("📡 Sending data to generate recipe:", requestData);
 
     fetch("/GPT/send-details", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userPreferences)
+        body: JSON.stringify(requestData)
     })
     .then(response => response.json())
     .then(data => {
@@ -203,30 +207,55 @@ function generateRecipes() {
 }
 
 // Function to display the recipe properly
-function displayRecipes(recipeData) {
+// Function to display the recipe properly
+function displayRecipe(recipeData) {
     let recipeContainer = document.getElementById("recipeResults");
+
+    if (!recipeContainer) {
+        console.error("❌ ERROR: recipeResults div not found!");
+        return;
+    }
+
+    // Show the recipe container when data is available
+    recipeContainer.style.display = "block";
+
+    // Clear previous content
     recipeContainer.innerHTML = "";
 
+    // Recipe Title
     let recipeTitle = document.createElement("h2");
     recipeTitle.innerText = "🍽️ Recommended Recipes";
     recipeContainer.appendChild(recipeTitle);
 
+    // Create recipe grid container
     let recipeList = document.createElement("div");
     recipeList.className = "recipe-grid";
 
+    // Create recipe card
     let recipeCard = document.createElement("div");
     recipeCard.className = "recipe-card";
 
+    // Extract Dish Name
     let dishName = document.createElement("h3");
     dishName.innerText = recipeData.recipes.split("\n\n")[0].replace("Dish Name: ", "");
     recipeCard.appendChild(dishName);
 
+    // Format recipe instructions
     let instructions = document.createElement("p");
-    instructions.innerText = recipeData.recipes.split("\n\n").slice(1).join("\n\n");
+    instructions.innerHTML = formatRecipeOutput(recipeData.recipes);
     recipeCard.appendChild(instructions);
 
+    // Append to grid and container
     recipeList.appendChild(recipeCard);
     recipeContainer.appendChild(recipeList);
+}
+
+// Function to format recipe text properly
+function formatRecipeOutput(recipeText) {
+    return recipeText
+        .replace(/\n\n/g, "<br><br>") // Preserve paragraph spacing
+        .replace(/\n- /g, "<br>🔸 ")  // Bullet points for ingredients
+        .replace(/\n[0-9]+\./g, match => `<br><strong>${match.trim()}</strong>`); // Bold step numbers
 }
 
 
