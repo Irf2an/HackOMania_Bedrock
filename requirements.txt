@@ -1,16 +1,35 @@
+# Environment Variables Management
 python-dotenv
+
+# Web App Frameworks
 streamlit
+Flask
+Flask[async]
+flask_cors
+
+# LangChain and AI Integration
 langgraph
 langchain
 langchain-openai
 langchain-core
 langchain-community
+google-generativeai
+
+# Database
+neo4j
 faiss-cpu
-notebook
-Flask
+
+# Security & Authentication
+bcrypt
+pbkdf2
+pyjwt
+
+# Image Processing
 Pillow
+
+# Notebook Support
+notebook
+
+# Utilities
 requests
 numpy
-flask_cors
-google-generativeai
-Flask[async]
