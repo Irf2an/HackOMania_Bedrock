@@ -530,9 +530,17 @@ function updateIngredient(index, newValue) {
     };
 }
 
-// ✅ Function to delete an ingredient
+// ✅ Function to delete an ingredient with confirmation
 function deleteIngredient(index) {
     let ingredientName = ingredientList[index];
+
+    // Show confirmation dialog
+    let confirmDelete = confirm(`Are you sure you want to delete "${ingredientName}"?`);
+    if (!confirmDelete) {
+        console.log(`❌ Deletion cancelled for ${ingredientName}`);
+        return; // Stop function if user cancels
+    }
+
     console.log(`❌ Deleting ${ingredientName}`);
 
     // Remove from ingredientList
