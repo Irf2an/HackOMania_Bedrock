@@ -6,6 +6,9 @@ import tempfile
 import os
 from langraph_pipeline import recognise_ingredients, get_recipes  # ✅ Import Langraph functions
 from flask import Flask, render_template
+import requests
+import openai
+import asyncio
 
 app = Flask(__name__)
 CORS(app)
@@ -78,6 +81,43 @@ def generate_recipe():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# ✅ Load OpenAI API Key
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+openai.api_key = OPENAI_API_KEY
+
+async def generate_dalle_image_async(ingredient):
+    """
+    Uses OpenAI DALL·E 2 to generate an image of the given ingredient asynchronously.
+    Returns a URL for the generated image.
+    """
+    try:
+        response = await asyncio.to_thread(openai.images.generate,
+            model="dall-e-2",  # ✅ Faster model
+            prompt=f"A high-resolution image of fresh {ingredient} as food, isolated on a white background.",
+            n=1,
+            size="1024x1024"
+        )
+        return response.data[0].url
+    except openai.OpenAIError as e:
+        return f"Error: {str(e)}"
+
+@app.route("/GPT/missing-url", methods=["POST"])
+async def get_ingredient_images():
+    """
+    Accepts a list of ingredient names and returns DALL·E 2-generated images asynchronously.
+    """
+    data = request.get_json()
+    ingredients = data.get("ingredients")
+
+    if not ingredients or not isinstance(ingredients, list):
+        return jsonify({"error": "Invalid or missing ingredients list"}), 400
+
+    # ✅ Run all image requests in parallel
+    tasks = [generate_dalle_image_async(ingredient) for ingredient in ingredients]
+    ingredient_images = await asyncio.gather(*tasks)
+
+    return jsonify(dict(zip(ingredients, ingredient_images))), 200
 
 if __name__ == "__main__":
     app.run(debug=True)  # Ensure this is at the bottom
