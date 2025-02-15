@@ -52,7 +52,27 @@ def recognise_ingredients(image_path):
 
 def get_recipes(ingredients):
     """
-    Placeholder function to generate recipes based on ingredients.
-    This will be implemented later.
+    Uses GPT-4 Turbo to suggest a dish based on the extracted ingredients.
+    Returns a dish name and a short step-by-step recipe.
     """
-    return ["Placeholder Recipe 1", "Placeholder Recipe 2"]  # Dummy data for now
+    # ✅ Create structured prompt for better recipe generation
+    messages = [
+        {"role": "system", "content": "You are a professional chef who suggests recipes based on available ingredients."},
+        {"role": "user", "content": f"""
+        I have the following ingredients available: {', '.join(ingredients)}.
+        Suggest a suitable dish I can cook using these ingredients and provide a step-by-step recipe.
+        Make sure the recipe is practical and uses all or most of the ingredients listed.
+        Format the response as:
+        Dish Name: [Dish Name]
+        Ingredients: [List of Ingredients]
+        Instructions: [Step-by-step cooking instructions]
+        """}
+    ]
+
+    # ✅ Call GPT-4 Turbo API to generate a recipe
+    response = llm.invoke(messages)
+
+    # ✅ Extract response text
+    recipe_text = response.content if hasattr(response, "content") else str(response)
+
+    return recipe_text
