@@ -56,33 +56,38 @@ Open your browser and visit:
 - **AI-based ingredient detection** from fridge images.
 - **Efficient, low-cost model** with caching to minimize API calls.
 
-### **3️⃣ UX-Friendly Interface**
+### **3️⃣ Intelligent Image Caching for Faster Loading**
+- **Ingredient and recipe images are cached** to avoid repeated API calls.
+- **Reduces loading times significantly** for a seamless experience.
+- **Stored locally & refreshed periodically** for up-to-date images.
+
+### **4️⃣ UX-Friendly Interface**
 - **Intuitive UI matching Kitchen Copilot’s theme**.
 - **Designed with Shneiderman’s 7 Golden Rules**:
   - **Loading icons** for real-time feedback.
   - **Image preview for uploaded pictures**.
   - **Delete confirmation for user actions**.
 
-### **4️⃣ Secure Authentication**
+### **5️⃣ Secure Authentication**
 - **Password hashing (PBKDF2-SHA256) & Flask secret session keys** for account security.
 
-### **5️⃣ Favorites & Recipe Curation**
+### **6️⃣ Favorites & Recipe Curation**
 - **Save recipes for quick access**.
 - **Dedicated "View Favorites" section** with an easy unfavorite option.
 
-### **6️⃣ Neo4j Graph Database for Smart Recommendations**
+### **7️⃣ Neo4j Graph Database for Smart Recommendations**
 - **Graph-based ingredient-recipe relationships** for **faster, optimized queries**.
 - **Content-based filtering using cosine similarity** to recommend meals.
 
-### **7️⃣ Ingredient Images for Better UX**
+### **8️⃣ Ingredient Images for Better UX**
 - **Each detected ingredient includes a high-quality image**.
 - **Enhances user recognition and interaction**.
 
-### **8️⃣ Customizable Preferences**
+### **9️⃣ Customizable Preferences**
 - **Select dietary preferences, spice level, cooking time, and more**.
 - **Easily modify preferences at any time**.
 
-### **9️⃣ Beautiful Recipe Display**
+### **🔟 Beautiful Recipe Display**
 - **Each recipe includes an image, ingredients, and step-by-step instructions**.
 - **Favorites are visually highlighted with a red heart ❤️**.
 
@@ -93,13 +98,6 @@ Open your browser and visit:
 - **Backend:** Flask, LangChain, Neo4j, OpenAI GPT-4 Turbo  
 - **Database:** Neo4j Graph Database  
 - **Security:** PBKDF2-SHA256, Flask Sessions  
-
----
-
-## **👨‍💻 Contributors**
-- **Xin Han** - [imevahans](https://github.com/imevahans)  
-- **Bryan** - [ItsPeeko](https://github.com/ItsPeeko)  
-- **Irfaan** - [Irf2an](https://github.com/Irf2an)  
 
 ---
 
@@ -119,3 +117,10 @@ Open your browser and visit:
 🔹 **Voice-Enabled Recipe Search**  
 - **Use speech recognition** to **search for recipes hands-free**.
 - Compatible with **smart speakers and voice assistants**.
+
+---
+
+## **👨‍💻 Contributors**
+- **Xin Han** - [imevahans](https://github.com/imevahans)  
+- **Bryan** - [ItsPeeko](https://github.com/ItsPeeko)  
+- **Irfaan** - [Irf2an](https://github.com/Irf2an)  
