@@ -4,6 +4,7 @@ langchain
 langchain-openai
 langchain-core
 langchain-community
+langgraph
 faiss-cpu
 notebook
 Flask
