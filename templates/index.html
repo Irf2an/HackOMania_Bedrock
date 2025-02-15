@@ -39,11 +39,12 @@
         </div>
     </div>
     
+    <!-- Image Upload Section -->
     <div class="upload-container">
-        <label for="imageUpload" class="custom-file-upload">📤 Choose an Image</label>
+        <label for="imageUpload" class="upload-btn">📷 Choose an Image</label>
         <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)">
     </div>
-    
+
     <div class="upload-container">
         <img id="preview" class="image-preview" style="display: none;" />
         <button id="identifyBtn" class="identify-btn" onclick="uploadImage()" style="display: none;">
