@@ -865,3 +865,26 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+.recipe-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ✅ Center-aligns all elements */
+    justify-content: center;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    margin: 15px;
+    max-width: 300px;
+}
+
+.recipe-img {
+    width: 150px; /* ✅ Adjust size as needed */
+    height: 150px;
+    object-fit: cover; /* ✅ Ensures the image is properly cropped */
+    border-radius: 8px;
+    display: block;
+    margin: 10px auto; /* ✅ Center the image horizontally */
+}

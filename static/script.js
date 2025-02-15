@@ -56,17 +56,44 @@ function fetchMissingIngredientImage(ingredient) {
         if (data[ingredient]) {
             console.log(`🟢 Missing image received for ${ingredient}: ${data[ingredient]}`);
             ingredientImages[ingredient] = data[ingredient]; // Store missing image
+            
         } else {
             console.warn(`⚠️ No image found for ${ingredient}, using placeholder.`);
-            ingredientImages[ingredient] = "https://via.placeholder.com/100?text=No+Image"; // Fallback image
+            ingredientImages[ingredient] = "https://cdn-icons-png.flaticon.com/128/4461/4461744.png"; // Fallback image
         }
         displayIngredients(); // ✅ Refresh UI after fetching image
+        console.log("URL for " + ingredient + " = " + data[ingredient]);
+        return data[ingredient];
     })
     .catch(error => {
         console.error(`🔴 Error fetching missing image for ${ingredient}:`, error);
-        ingredientImages[ingredient] = "https://via.placeholder.com/100?text=No+Image"; // Fallback image
+        ingredientImages[ingredient] = "https://cdn-icons-png.flaticon.com/128/4461/4461744.png"; // Fallback image
         displayIngredients(); // Ensure UI updates even on failure
     });
+}
+
+// ✅ Fetch missing ingredient image from backend and return the image URL
+async function fetchRecipeImage(ingredient) {
+    try {
+        let response = await fetch("/GPT/missing-url", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ingredients: [ingredient] })
+        });
+
+        let data = await response.json();
+
+        if (data[ingredient]) {
+            console.log(`🟢 Missing image received for ${ingredient}: ${data[ingredient]}`);
+            return data[ingredient]; // ✅ Return the fetched image URL
+        } else {
+            console.warn(`⚠️ No image found for ${ingredient}, using placeholder.`);
+            return "https://cdn-icons-png.flaticon.com/128/4461/4461744.png"; // Fallback image
+        }
+    } catch (error) {
+        console.error(`🔴 Error fetching missing image for ${ingredient}:`, error);
+        return "https://cdn-icons-png.flaticon.com/128/4461/4461744.png"; // Fallback image
+    }
 }
 
 
@@ -142,7 +169,8 @@ function hideLoadingSpinner() {
 }
 
 
-function displayRecipe(recipeData) {
+async function displayRecipe(recipeData) {
+    console.log("recipeData = ", recipeData);
     let recipeContainer = document.getElementById("recipeResults");
 
     if (!recipeContainer) {
@@ -180,11 +208,11 @@ function displayRecipe(recipeData) {
         return;
     }
 
-    // ✅ Generate UI for each recipe
-    Object.values(recipes).forEach((recipe) => {
+    // ✅ Fetch all images before rendering UI
+    let recipeCardsPromises = Object.values(recipes).map(async (recipe) => {
         if (!recipe || !recipe["Dish Name"]) {
             console.warn("⚠️ Skipping invalid recipe:", recipe);
-            return;
+            return null;
         }
 
         let recipeCard = document.createElement("div");
@@ -194,6 +222,17 @@ function displayRecipe(recipeData) {
         let dishName = document.createElement("h3");
         dishName.innerText = recipe["Dish Name"];
         recipeCard.appendChild(dishName);
+
+        // ✅ Create placeholder image first
+        let recipeImage = document.createElement("img");
+        recipeImage.className = "recipe-img";
+        recipeImage.src = "https://cdn-icons-png.flaticon.com/128/4461/4461744.png"; // Default while loading
+        recipeCard.appendChild(recipeImage);
+
+        // ✅ Fetch image asynchronously and update the image source
+        let imageUrl = await fetchRecipeImage(recipe["Dish Name"]);
+        console.log(`✅ Image URL received for ${recipe["Dish Name"]}: ${imageUrl}`);
+        recipeImage.src = imageUrl || "https://cdn-icons-png.flaticon.com/128/4461/4461744.png"; // Update image
 
         // Ingredients List
         if (Array.isArray(recipe["Ingredients"])) {
@@ -227,7 +266,7 @@ function displayRecipe(recipeData) {
             let instructionsList = document.createElement("ol");
             recipe["Instructions"].forEach((step) => {
                 let li = document.createElement("li");
-                li.innerHTML = removeStepNumbering(step); // Removes "Step X:"
+                li.innerHTML = removeStepNumbering(step);
                 instructionsList.appendChild(li);
             });
 
@@ -235,8 +274,15 @@ function displayRecipe(recipeData) {
             recipeCard.appendChild(instructionsBox);
         }
 
-        // Append recipe card to the grid
-        recipeList.appendChild(recipeCard);
+        return recipeCard; // Return the completed recipe card
+    });
+
+    // ✅ Wait for all images before displaying recipes
+    let recipeCards = await Promise.all(recipeCardsPromises);
+
+    // Append each completed card to the grid
+    recipeCards.forEach((card) => {
+        if (card) recipeList.appendChild(card);
     });
 
     // Append the grid to the container
@@ -423,8 +469,6 @@ function fetchMissingImages(missingList) {
 
 // ✅ Function to display ingredients AFTER all images are loaded
 function displayIngredients() {
-    console.log("🔵 Displaying all ingredients...");
-
     let grid = document.getElementById("ingredientsGrid");
     grid.innerHTML = ""; // Clear existing content
 
@@ -436,9 +480,6 @@ function displayIngredients() {
     ingredientList.forEach((ingredient, index) => {
         let cleanedName = cleanIngredientName(ingredient).toLowerCase();
         let imageUrl = ingredientImages[cleanedName];
-
-        console.log(`🟢 Showing: ${cleanedName}`);
-
         let card = document.createElement("div");
         card.className = "ingredient-card";
 

@@ -161,7 +161,6 @@ def get_recipes(state: OverallRecipeState):
     ]
 
     response = llm.invoke(messages)
-    print(messages)
     return {"recipe_text": response.content}
 
 #  Create graphs
