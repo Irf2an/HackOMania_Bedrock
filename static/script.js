@@ -172,7 +172,7 @@ function addIngredient() {
     }
 }
 
-// Sends ingredients & preferences to API
+// Function to generate recipes
 function generateRecipes() {
     let dietaryPref = document.getElementById("dietaryPref").value;
     let seasoningPref = document.getElementById("seasoningPref").value;
@@ -180,30 +180,64 @@ function generateRecipes() {
     let recipeStylePref = document.getElementById("recipeStylePref").value;
 
     let userPreferences = {
-        "Dietary Preference": dietaryPref,
-        "Seasoning Preference": seasoningPref,
-        "Cooking Time": cookingTimePref,
-        "Recipe Style": recipeStylePref
+        dietaryPreference: dietaryPref,
+        seasoningPreference: seasoningPref,
+        cookingTime: cookingTimePref,
+        recipeStyle: recipeStylePref,
+        ingredients: ingredientList
     };
 
-    let requestData = {
-        ingredients: ingredientList,
-        preferences: userPreferences
-    };
-
-    console.log("requestData = ", requestData);
+    console.log("📡 Sending data to generate recipe:", userPreferences);
 
     fetch("/GPT/send-details", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(requestData)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userPreferences)
     })
     .then(response => response.json())
-    .then(data => console.log("Recipes:", data))
-    .catch(error => console.error("Error:", error));
+    .then(data => {
+        console.log("✅ Recipe Response:", data);
+        displayRecipe(data);
+    })
+    .catch(error => console.error("🔴 Error generating recipe:", error));
 }
+
+// Function to display the recipe properly
+function displayRecipes(recipeData) {
+    let recipeContainer = document.getElementById("recipeResults");
+    recipeContainer.innerHTML = "";
+
+    let recipeTitle = document.createElement("h2");
+    recipeTitle.innerText = "🍽️ Recommended Recipes";
+    recipeContainer.appendChild(recipeTitle);
+
+    let recipeList = document.createElement("div");
+    recipeList.className = "recipe-grid";
+
+    let recipeCard = document.createElement("div");
+    recipeCard.className = "recipe-card";
+
+    let dishName = document.createElement("h3");
+    dishName.innerText = recipeData.recipes.split("\n\n")[0].replace("Dish Name: ", "");
+    recipeCard.appendChild(dishName);
+
+    let instructions = document.createElement("p");
+    instructions.innerText = recipeData.recipes.split("\n\n").slice(1).join("\n\n");
+    recipeCard.appendChild(instructions);
+
+    recipeList.appendChild(recipeCard);
+    recipeContainer.appendChild(recipeList);
+}
+
+
+// Helper function to format recipe output
+function formatRecipeOutput(recipeText) {
+    return recipeText
+        .replace(/\n\n/g, "<br><br>") // Preserve paragraph spacing
+        .replace(/\n- /g, "<br>🔸 ") // Bullet points for ingredients
+        .replace(/\n[0-9]+\./g, match => `<br><strong>${match.trim()}</strong>`); // Step numbers bold
+}
+
 
 // Function to preview the image before uploading
 function previewImage(event) {
