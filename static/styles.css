@@ -1,20 +1,27 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #FAF9F6;
     text-align: center;
+    margin: 0;
+    padding: 0;
 }
 
+/* Header */
 .header {
     background-color: #FF6F3C;
     color: white;
     padding: 15px;
     font-size: 24px;
+    text-align: center;
 }
 
+/* Upload Section */
 .upload-section {
     margin: 20px;
 }
 
+/* Button Styling */
 button {
     background-color: #FF6F3C;
     color: white;
@@ -22,34 +29,278 @@ button {
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+button:hover {
+    background-color: #E55B2F;
+    transform: scale(1.05);
+}
+
+/* Ingredients Grid */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
     padding: 20px;
     justify-content: center;
 }
 
+/* Ingredient Card */
 .ingredient-card {
     background: white;
+    border: 1px solid #ddd;
     border-radius: 10px;
     padding: 15px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 }
 
+/* Hover Effect */
+.ingredient-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Centered Images */
 .ingredient-card img {
     width: 80px;
     height: 80px;
-    object-fit: cover;
-    display: block;
+    object-fit: contain;
     margin: 0 auto;
+    display: block;
 }
 
+/* Input Field */
 .ingredient-card input {
-    display: block;
-    margin: 10px auto;
+    width: 90%;
+    margin-top: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     text-align: center;
+}
+
+/* Buttons */
+.ingredient-card button {
+    background-color: #FF6F3C;
+    color: white;
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.ingredient-card button:hover {
+    background-color: #E55B2F;
+}
+
+/* Add Ingredient Section */
+.add-ingredient {
+    margin-top: 20px;
+}
+
+.add-ingredient input {
+    padding: 8px;
+    width: 200px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Preferences Section */
+.preferences-container {
+    margin: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    text-align: left;
+}
+
+.preferences-container select {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .ingredient-card {
+        padding: 10px;
+    }
+
+    button {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .preferences-container {
+        width: 90%;
+    }
+}
+
+/* ----- Style the File Input (Choose File Button) ----- */
+.upload-section input[type="file"] {
+    display: none; /* Hide default file input */
+}
+
+.upload-section label {
+    background-color: #FF6F3C;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.upload-section label:hover {
+    background-color: #E55B2F;
+    transform: scale(1.05);
+}
+
+/* ----- Preview Image Styling ----- */
+#preview {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 15px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ----- General Input Fields Styling ----- */
+input[type="text"], select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, select:focus {
+    border-color: #FF6F3C;
+    outline: none;
+}
+
+/* ----- Buttons Styling ----- */
+button {
+    background-color: #FF6F3C;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #E55B2F;
+    transform: scale(1.05);
+}
+
+/* ----- Improve Ingredient Grid Layout ----- */
+.ingredient-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    background: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.ingredient-card:hover {
+    transform: translateY(-5px);
+}
+
+/* ----- Make Ingredients Images Consistent ----- */
+.ingredient-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+}
+
+/* ----- Add Space Between Elements ----- */
+.upload-section,
+.preferences-container,
+.ingredient-container {
+    margin-bottom: 20px;
+}
+
+/* Show the file input button properly */
+.upload-section label {
+    background-color: #FF6F3C;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* When the user hovers, make it look interactive */
+.upload-section label:hover {
+    background-color: #E55B2F;
+    transform: scale(1.05);
+}
+
+/* Ensure the file input is still functional */
+.upload-section input[type="file"] {
+    display: none; /* Hides the default button but keeps functionality */
+}
+
+/* Style the uploaded image preview */
+#preview {
+    max-width: 100%;
+    height: auto;
+    margin-top: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Identify Ingredients Button */
+.identify-btn {
+    display: block;
+    margin: 15px auto;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #FF6F3C;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.identify-btn:hover {
+    background-color: #e65c2a;
 }
