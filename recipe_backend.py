@@ -8,13 +8,13 @@ from langraph_pipeline import recognise_ingredients, get_recipes  # ✅ Import L
 app = Flask(__name__)
 
 # ✅ Temporary dummy functions to test API (Replace with Langraph later)
-def recognise_ingredients(image_path):
-    """ Dummy function to return fake ingredients. """
-    return ["chicken", "garlic", "pepper"]  # Fake output
+# def recognise_ingredients(image_path):
+#     """ Dummy function to return fake ingredients. """
+#     return ["chicken", "garlic", "pepper"]  # Fake output
 
-def get_recipes(ingredients):
-    """ Dummy function to return fake recipes. """
-    return ["Garlic Chicken Stir Fry", "Spicy Chicken Soup"]  # Fake output
+# def get_recipes(ingredients):
+#     """ Dummy function to return fake recipes. """
+#     return ["Garlic Chicken Stir Fry", "Spicy Chicken Soup"]  # Fake output
 
 @app.route("/GPT/send-image", methods=["POST"])
 def process_image():
