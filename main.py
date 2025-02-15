@@ -200,7 +200,6 @@ if uploaded_file:
                         st.warning("⚠️ No ingredients detected. Try a different image.")
                     else:
                         st.success("✅ Ingredients Identified!")
-                        st.write("**Detected Ingredients:**", st.session_state["ingredients"])
                 else:
                     st.error(f"🚨 Error: {response.json().get('error', 'Unknown error')}")
                     print(f"❌ API Error: {response.json()}")
@@ -215,7 +214,7 @@ if uploaded_file:
 
 
 # ---- DISPLAY INGREDIENT LIST ONLY AFTER IDENTIFICATION ----
-if "ingredients" in st.session_state:
+if "ingredients" in st.session_state and st.session_state["ingredients"]:
     st.markdown("<div class='input-container'>📝 Identified Ingredients</div>", unsafe_allow_html=True)
 
     if "editable_ingredients" not in st.session_state:
@@ -225,7 +224,7 @@ if "ingredients" in st.session_state:
     
     for i, ingredient in enumerate(st.session_state["editable_ingredients"]):
         col1, col2, col3 = st.columns([2, 1, 1])  # Create columns for layout
-        
+
         with col1:
             new_value = st.text_input("", ingredient, key=f"ingredient_{i}", label_visibility="collapsed")
             edited_ingredients.append(new_value)
@@ -234,11 +233,11 @@ if "ingredients" in st.session_state:
             st.image(f"https://www.themealdb.com/images/ingredients/{new_value}.png", width=80)
 
         with col3:
-            if st.button("✏️", key=f"edit_{i}"):  
+            if st.button("✏️", key=f"edit_{i}"):  # Edit button
                 st.session_state["editable_ingredients"][i] = new_value
                 st.rerun()
 
-            if st.button("❌", key=f"delete_{i}"):  
+            if st.button("❌", key=f"delete_{i}"):  # Delete button
                 st.session_state["editable_ingredients"].remove(ingredient)
                 st.rerun()
 
