@@ -67,7 +67,7 @@ Open your browser and visit:
 - **Stored locally & refreshed periodically** for up-to-date images.
 
 ### **4️⃣ Social Media Sharing Feature**
-- **Users can share recipes to Twitter, Facebook, and WhatsApp.**
+- **Users can share recipes to X, Facebook, and WhatsApp.**
 - **Custom message input allows personalization** before sharing.
 - **Well-designed share buttons with platform-specific branding and icons.**
 
