@@ -840,7 +840,7 @@ function displayFavorites(favorites) {
 // ✅ Open Share Modal with Custom Message
 function openShareModal(recipeName, ingredients, instructions) {
     let modal = document.getElementById("shareModal");
-    modal.style.display = "flex"; // Show modal
+    modal.style.display = "flex";
 
     let defaultMessage = `🍽️ Check out this recipe: ${recipeName}!  
 Ingredients: ${ingredients.join(", ")}  
@@ -848,21 +848,9 @@ Steps: ${instructions.join(". ")}`;
 
     document.getElementById("customMessage").value = defaultMessage;
 
-    // ✅ Set up sharing buttons
-    document.getElementById("shareTwitter").onclick = function () {
-        shareOnSocial("twitter");
-    };
-    document.getElementById("shareFacebook").onclick = function () {
-        shareOnSocial("facebook");
-    };
-    document.getElementById("shareWhatsApp").onclick = function () {
-        shareOnSocial("whatsapp");
-    };
-}
-
-// ✅ Close the Modal
-function closeShareModal() {
-    document.getElementById("shareModal").style.display = "none";
+    document.getElementById("shareX").onclick = () => shareOnSocial("x");
+    document.getElementById("shareFacebook").onclick = () => shareOnSocial("facebook");
+    document.getElementById("shareWhatsApp").onclick = () => shareOnSocial("whatsapp");
 }
 
 // ✅ Share on Selected Social Platform
@@ -871,8 +859,8 @@ function shareOnSocial(platform) {
     let url = "https://tinyurl.com/bedrock-hackomania"; // Change this to actual app URL
 
     let shareUrl = "";
-    if (platform === "twitter") {
-        shareUrl = `https://twitter.com/intent/tweet?text=${message}&url=${url}`;
+    if (platform === "x") {
+        shareUrl = `https://twitter.com/intent/post?text=${message}&url=${url}`;
     } else if (platform === "facebook") {
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${message}`;
     } else if (platform === "whatsapp") {
@@ -880,4 +868,9 @@ function shareOnSocial(platform) {
     }
 
     window.open(shareUrl, "_blank");
+}
+
+// ✅ Close the Modal
+function closeShareModal() {
+    document.getElementById("shareModal").style.display = "none";
 }

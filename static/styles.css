@@ -1175,3 +1175,20 @@ textarea:focus {
 #customMessage:focus {
     border-color: #4CAF50; /* Matches Kitchen Copilot theme */
 }
+
+/* X (formerly Twitter) Button */
+.x-btn {
+    background-color: #000; /* Black matches X branding */
+}
+
+.x-btn img {
+    width: 24px;
+    height: 24px;
+    filter: invert(1); /* Makes the white X logo visible */
+}
+
+/* Hover Effect */
+.x-btn:hover {
+    background-color: #333;
+    transform: scale(1.05);
+}
