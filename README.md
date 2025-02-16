@@ -66,29 +66,34 @@ Open your browser and visit:
 - **Reduces loading times significantly** for a seamless experience.
 - **Stored locally & refreshed periodically** for up-to-date images.
 
-### **4️⃣ UX-Friendly Interface**
+### **4️⃣ Social Media Sharing Feature**
+- **Users can share recipes to Twitter, Facebook, and WhatsApp.**
+- **Custom message input allows personalization** before sharing.
+- **Well-designed share buttons with platform-specific branding and icons.**
+
+### **5️⃣ UX-Friendly Interface**
 - **Intuitive UI matching Kitchen Copilot’s theme**.
 - **Designed with Shneiderman’s 7 Golden Rules**:
   - **Loading icons** for real-time feedback.
   - **Image preview for uploaded pictures**.
   - **Delete confirmation for user actions**.
 
-### **5️⃣ Secure Authentication**
+### **6️⃣ Secure Authentication**
 - **Password hashing (PBKDF2-SHA256) & Flask secret session keys** for account security.
 
-### **6️⃣ Favorites & Recipe Curation**
+### **7️⃣ Favorites & Recipe Curation**
 - **Save recipes for quick access**.
 - **Dedicated "View Favorites" section** with an easy unfavorite option.
+- **Shared recipes include a share button for social media.**
 
-### **7️⃣ Neo4j Graph Database for Smart Recommendations**
+### **8️⃣ Neo4j Graph Database for Smart Recommendations**
 - **Graph-based ingredient-recipe relationships** for **faster, optimized queries**.
-- **Content-based filtering using cosine similarity** to recommend meals.
 
-### **8️⃣ Ingredient Images for Better UX**
+### **9️⃣ Ingredient Images for Better UX**
 - **Each detected ingredient includes a high-quality image**.
 - **Enhances user recognition and interaction**.
 
-### **9️⃣ Customizable Preferences**
+### **🔟 Customizable Preferences**
 - **Select dietary preferences, spice level, cooking time, and more**.
 - **Easily modify preferences at any time**.
 
