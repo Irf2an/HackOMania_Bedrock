@@ -778,6 +778,16 @@ function displayFavorites(favorites) {
 
         recipeCard.appendChild(favoriteButton);
 
+        // ✅ Create Share Button
+        let shareButton = document.createElement("button");
+        shareButton.classList.add("share-btn");
+        shareButton.innerHTML = `<i class="fa fa-share"></i> Share`; // Adds icon
+        shareButton.addEventListener("click", function () {
+            openShareModal(recipe.recipe_name, recipe.ingredients, recipe.instructions);
+        });
+
+        recipeCard.appendChild(shareButton);
+
         if (Array.isArray(recipe.ingredients)) {
             let ingredientsBox = document.createElement("div");
             ingredientsBox.className = "ingredients-box";
