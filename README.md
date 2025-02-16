@@ -51,6 +51,11 @@ Open your browser and visit:
 - **Uses LangChain & GPT-4 Turbo** for intelligent **ingredient-based recipe generation**.
 - **Supports dietary filters** (Vegan, Keto, Gluten-Free, etc.).
 - **Customize spice level, cooking time, difficulty, and recipe style**.
+- **Multi-Agent Workflow with LangGraph:**  Employs LangGraph to orchestrate a multi-agent system for recipe generation. This pipeline includes:
+    - **Ingredient Generator:**  Analyzes images to identify and extract potential ingredients.
+    - **Ingredient Filter:** Refines the generated ingredient list, ensuring relevance and culinary appropriateness.
+    - **Recipe Generator:**  Leverages the filtered ingredients to create delicious and customized recipes.
+    - **Recipe Filter:** Further refines and filters generated recipes based on user preferences.
 
 ### **2️⃣ Smart Image Recognition - Only ~$0.01 per Image!**
 - **AI-based ingredient detection** from fridge images.
