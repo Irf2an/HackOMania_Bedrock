@@ -911,3 +911,267 @@ body {
 .favorite-btn.favorited {
     color: red;
 }
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.close-btn {
+    font-size: 24px;
+    float: right;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    height: 80px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* 🔗 Share Button */
+.share-btn {
+    background-color: #4CAF50; /* Green to match theme */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.share-btn i {
+    font-size: 18px;
+}
+
+/* Hover Effect */
+.share-btn:hover {
+    background-color: #388E3C;
+}
+
+/* 🌟 Share Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Darkened background for focus */
+    backdrop-filter: blur(5px); /* Slight blur for a glass effect */
+    justify-content: center;
+    align-items: center;
+}
+
+/* 📌 Modal Content Box */
+.modal-content {
+    background: #ffffff; /* White background */
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 🎯 Close Button (X) */
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 22px;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.close-btn:hover {
+    color: #333;
+    transform: scale(1.2);
+}
+
+/* 📝 Input Field for Custom Message */
+textarea {
+    width: 100%;
+    height: 90px;
+    margin: 10px 0;
+    padding: 12px;
+    font-size: 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    resize: none;
+    transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+    border-color: #4CAF50; /* Matches Kitchen Copilot theme */
+}
+
+/* 📢 Social Media Share Buttons */
+.share-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Generic Social Button */
+.share-buttons button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+}
+
+/* 🌐 Social Media Colors */
+.twitter-btn {
+    background-color: #1DA1F2;
+    position: relative;
+}
+
+.facebook-btn {
+    background-color: #1877F2;
+}
+
+.whatsapp-btn {
+    background-color: #25D366;
+}
+
+/* Hover Effects */
+.twitter-btn:hover {
+    background-color: #0d8bd9;
+    transform: scale(1.05);
+}
+
+.facebook-btn:hover {
+    background-color: #1558ba;
+    transform: scale(1.05);
+}
+
+.whatsapp-btn:hover {
+    background-color: #1da851;
+    transform: scale(1.05);
+}
+
+/* Platform Logos */
+.share-buttons button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* 📢 Social Media Share Buttons */
+.share-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Generic Button Style */
+.share-buttons button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* 🌐 Social Media Colors */
+.twitter-btn {
+    background-color: #1DA1F2;
+    position: relative;
+}
+
+/* ✅ Add a dark background circle to improve contrast */
+.twitter-btn::before {
+    content: "";
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background-color: rgba(0, 0, 0, 0.2); /* Darken background slightly */
+    border-radius: 50%;
+    left: 8px;
+}
+
+/* Twitter Button Logo Fix */
+.twitter-btn img {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.3)); /* Adds contrast */
+    position: relative;
+    z-index: 1;
+}
+
+/* Hover Effects */
+.twitter-btn:hover {
+    background-color: #0d8bd9;
+    transform: scale(1.05);
+}
+
+/* 📝 Input Field for Custom Message */
+#customMessage {
+    width: 85%; /* ✅ Reduced width for better aesthetics */
+    max-width: 320px; /* ✅ Ensures it doesn’t stretch too wide */
+    height: 90px;
+    margin: 10px auto; /* ✅ Centers the textarea */
+    padding: 12px;
+    font-size: 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    resize: none;
+    display: block;
+    transition: border-color 0.3s ease;
+}
+
+#customMessage:focus {
+    border-color: #4CAF50; /* Matches Kitchen Copilot theme */
+}

@@ -161,6 +161,34 @@
     <!-- Recipe Display -->
     <div id="recipeResults" class="recipe-container" style="display: none;"></div>
 
+    <!-- Share Modal -->
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeShareModal()">&times;</span>
+            <h2>Share Your Recipe</h2>
+            <textarea id="customMessage" placeholder="Write your message..."></textarea>
+
+            <!-- Social Media Buttons -->
+            <div class="share-buttons">
+                <button id="shareTwitter" class="twitter-btn">
+                    <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter Logo">
+                    Share on Twitter
+                </button>
+
+                <button id="shareFacebook" class="facebook-btn">
+                    <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook Logo">
+                    Share on Facebook
+                </button>
+
+                <button id="shareWhatsApp" class="whatsapp-btn">
+                    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Logo">
+                    Share on WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

@@ -238,7 +238,7 @@ function toggleFavorite(button, recipeName, ingredients, instructions) {
 }
 
 
-// ✅ Function to display recipes with correct heart status
+// ✅ Function to display recipes with correct heart status & share option
 async function displayRecipe(recipeData) {
     console.log("recipeData = ", recipeData);
     let recipeContainer = document.getElementById("recipeResults");
@@ -310,6 +310,17 @@ async function displayRecipe(recipeData) {
         });
 
         recipeCard.appendChild(favoriteButton);
+
+        // ✅ Create Share Button
+        let shareButton = document.createElement("button");
+        shareButton.classList.add("share-btn");
+        shareButton.innerHTML = `<i class="fa fa-share"></i> Share`; // Adds a nice icon
+        shareButton.addEventListener("click", function () {
+            openShareModal(recipe["Dish Name"], recipe["Ingredients"], recipe["Instructions"]);
+        });
+
+        recipeCard.appendChild(shareButton);
+
 
         if (Array.isArray(recipe["Ingredients"])) {
             let ingredientsBox = document.createElement("div");
@@ -814,4 +825,49 @@ function displayFavorites(favorites) {
         });
         recipeContainer.appendChild(recipeList);
     });
+}
+
+// ✅ Open Share Modal with Custom Message
+function openShareModal(recipeName, ingredients, instructions) {
+    let modal = document.getElementById("shareModal");
+    modal.style.display = "flex"; // Show modal
+
+    let defaultMessage = `🍽️ Check out this recipe: ${recipeName}!  
+Ingredients: ${ingredients.join(", ")}  
+Steps: ${instructions.join(". ")}`;
+
+    document.getElementById("customMessage").value = defaultMessage;
+
+    // ✅ Set up sharing buttons
+    document.getElementById("shareTwitter").onclick = function () {
+        shareOnSocial("twitter");
+    };
+    document.getElementById("shareFacebook").onclick = function () {
+        shareOnSocial("facebook");
+    };
+    document.getElementById("shareWhatsApp").onclick = function () {
+        shareOnSocial("whatsapp");
+    };
+}
+
+// ✅ Close the Modal
+function closeShareModal() {
+    document.getElementById("shareModal").style.display = "none";
+}
+
+// ✅ Share on Selected Social Platform
+function shareOnSocial(platform) {
+    let message = encodeURIComponent(document.getElementById("customMessage").value);
+    let url = "https://tinyurl.com/bedrock-hackomania"; // Change this to actual app URL
+
+    let shareUrl = "";
+    if (platform === "twitter") {
+        shareUrl = `https://twitter.com/intent/tweet?text=${message}&url=${url}`;
+    } else if (platform === "facebook") {
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${message}`;
+    } else if (platform === "whatsapp") {
+        shareUrl = `https://api.whatsapp.com/send?text=${message} ${url}`;
+    }
+
+    window.open(shareUrl, "_blank");
 }
