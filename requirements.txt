@@ -33,3 +33,5 @@ notebook
 # Utilities
 requests
 numpy
+gunicorn==21.2.0
+typing-extensions==4.9.0
